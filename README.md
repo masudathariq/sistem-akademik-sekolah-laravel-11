@@ -104,21 +104,16 @@ Project ini dibuat untuk:
 
 ---
 
-## 📷 Screenshot (Opsional)
+## 📷 Screenshot
 
-Tambahkan screenshot tampilan aplikasi di sini untuk memperjelas fitur.
+
 
 ---
 
 ## 👨‍💻 Developer
 
 Dikembangkan oleh:
-**Masud Athariq**
+**Masud Athariq Akbar, A.Md.Kom**
 
 ---
 
-## ⭐ Penutup
-
-Project ini dapat dikembangkan lebih lanjut sesuai kebutuhan sekolah, seperti penambahan fitur e-learning, integrasi API, maupun sistem ujian online.
-
----
