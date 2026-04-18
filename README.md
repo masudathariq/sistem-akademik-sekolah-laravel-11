@@ -1,70 +1,124 @@
-<<<<<<< HEAD
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 Sistem Informasi Akademik Sekolah (Laravel 11)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi **Sistem Informasi Akademik (SIAKAD)** berbasis web yang dibangun menggunakan **Laravel 11** untuk membantu pengelolaan administrasi sekolah secara terintegrasi, efisien, dan modern.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👨‍💼 1. Admin
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Manajemen Data User
+* Data Guru
+* Absensi Guru
+* Jadwal Absensi Guru
+* Rekap Absensi Guru
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🗂️ 2. Tata Usaha
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* Tahun Ajaran
+* Rombongan Belajar (Rombel)
+* Data Peserta Didik
+* Penempatan Kelas
+* Kenaikan Kelas
+* Data Alumni
+* Jadwal Mengajar
+* Mata Pelajaran
+* Surat Keterangan Pindah
+* Surat Keterangan Aktif
+* Surat Masuk & Surat Keluar
+* Rekap Kehadiran Guru
+* Rekap Kehadiran Siswa
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+### 👨‍🏫 3. Guru
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* Absensi Guru
+* Rekap Absensi Guru
+* Absensi Siswa
+* Rekap Kehadiran Harian
+* Rekap Kehadiran Bulanan
+* Jadwal Mengajar
+* Wali Kelas
+* Raport Tahfidz
+* Slip Gaji
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 💰 4. Bendahara
 
-## Contributing
+* Manajemen Transaksi
+* Laporan Absensi Guru
+* Sistem Penggajian
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🛠️ Teknologi yang Digunakan
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* **Laravel 11**
+* **PHP**
+* **MySQL**
+* **Blade Template**
+* **Tailwind CSS**
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## ⚙️ Instalasi
 
-## License
+Ikuti langkah berikut untuk menjalankan project secara lokal:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-=======
-# sistem-akademik-sekolah-laravel-11
->>>>>>> 99ca38b80089f735acfe9199c487cc82a0dd6375
+```bash
+git clone https://github.com/masudathariq/sistem-akademik-sekolah-laravel-11.git
+cd sistem-akademik-sekolah-laravel-11
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+---
+
+## 🔐 Akses Sistem
+
+Aplikasi memiliki beberapa role pengguna:
+
+* Admin
+* Tata Usaha
+* Guru
+* Bendahara
+
+---
+
+## 📌 Tujuan Pengembangan
+
+Project ini dibuat untuk:
+
+* Digitalisasi sistem administrasi sekolah
+* Meningkatkan efisiensi pengelolaan data akademik
+* Mempermudah monitoring kehadiran dan penggajian
+* Menjadi solusi terintegrasi dalam satu platform
+
+---
+
+## 📷 Screenshot (Opsional)
+
+Tambahkan screenshot tampilan aplikasi di sini untuk memperjelas fitur.
+
+---
+
+## 👨‍💻 Developer
+
+Dikembangkan oleh:
+**Masud Athariq**
+
+---
+
+## ⭐ Penutup
+
+Project ini dapat dikembangkan lebih lanjut sesuai kebutuhan sekolah, seperti penambahan fitur e-learning, integrasi API, maupun sistem ujian online.
+
+---
