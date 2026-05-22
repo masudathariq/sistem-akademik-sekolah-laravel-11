@@ -149,6 +149,16 @@
             <span>Rapor Tahfidz</span>
         </a>
 
+        {{-- RAPORT IQRO --}}
+        <a href="{{ route('guru.raport-iqro.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-md
+   hover:bg-white/10 transition
+   {{ request()->routeIs('guru.raport-iqro.*') ? 'bg-white/20 font-semibold' : '' }}">
+
+            <i class="fa-solid fa-book-open w-5 text-center"></i>
+            <span>Rapor Iqro</span>
+        </a>
+
 
 
 

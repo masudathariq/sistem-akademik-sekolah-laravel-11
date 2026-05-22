@@ -23,6 +23,8 @@ class DashboardController extends Controller
         $totalUser      = User::count();
         $totalGuru      = Guru::count();
         $totalSiswa     = Siswa::count();
+        $jumlahSiswaLakiLaki = Siswa::where('jenis_kelamin', 'L')->count();
+        $jumlahSiswaPerempuan = Siswa::where('jenis_kelamin', 'P')->count();
         $absensiHariIni = AbsensiGuru::whereDate('tanggal', today())->count();
 
         /* ══════════════════════════════════════
@@ -55,6 +57,68 @@ class DashboardController extends Controller
         $tahunAktif  = TahunAjaran::where('is_active', 1)->first();
         $totalRombel = Rombel::count();
         $totalMapel  = MataPelajaran::count();
+
+        /*
+           REKAP DATA SISWA
+        */
+
+        $rombelsRekap = Rombel::with('kategori')
+            ->withCount([
+                'siswas as total_siswa',
+                'siswas as total_laki_laki' => fn ($query) => $query->where('jenis_kelamin', 'L'),
+                'siswas as total_perempuan' => fn ($query) => $query->where('jenis_kelamin', 'P'),
+            ])
+            ->orderBy('tingkat')
+            ->orderBy('kode_rombel')
+            ->get();
+
+        $rekapKategoriSiswa = [
+            'reguler' => ['total' => 0, 'L' => 0, 'P' => 0],
+            'pondok' => ['total' => 0, 'L' => 0, 'P' => 0],
+        ];
+        $rekapTingkatSiswa = [];
+        $rekapTingkatKategoriSiswa = [];
+        $rekapRombelSiswa = [];
+
+        foreach ($rombelsRekap as $rombel) {
+            $kategori = $rombel->kategori->kategori ?? null;
+            $total = (int) $rombel->total_siswa;
+            $lakiLaki = (int) $rombel->total_laki_laki;
+            $perempuan = (int) $rombel->total_perempuan;
+
+            if ($kategori && isset($rekapKategoriSiswa[$kategori])) {
+                $rekapKategoriSiswa[$kategori]['total'] += $total;
+                $rekapKategoriSiswa[$kategori]['L'] += $lakiLaki;
+                $rekapKategoriSiswa[$kategori]['P'] += $perempuan;
+
+                $rekapTingkatKategoriSiswa[$rombel->tingkat][$kategori]['total'] =
+                    ($rekapTingkatKategoriSiswa[$rombel->tingkat][$kategori]['total'] ?? 0) + $total;
+                $rekapTingkatKategoriSiswa[$rombel->tingkat][$kategori]['L'] =
+                    ($rekapTingkatKategoriSiswa[$rombel->tingkat][$kategori]['L'] ?? 0) + $lakiLaki;
+                $rekapTingkatKategoriSiswa[$rombel->tingkat][$kategori]['P'] =
+                    ($rekapTingkatKategoriSiswa[$rombel->tingkat][$kategori]['P'] ?? 0) + $perempuan;
+            }
+
+            $rekapTingkatSiswa[$rombel->tingkat]['total'] =
+                ($rekapTingkatSiswa[$rombel->tingkat]['total'] ?? 0) + $total;
+            $rekapTingkatSiswa[$rombel->tingkat]['L'] =
+                ($rekapTingkatSiswa[$rombel->tingkat]['L'] ?? 0) + $lakiLaki;
+            $rekapTingkatSiswa[$rombel->tingkat]['P'] =
+                ($rekapTingkatSiswa[$rombel->tingkat]['P'] ?? 0) + $perempuan;
+
+            $rekapRombelSiswa[] = [
+                'tingkat' => $rombel->tingkat,
+                'tingkat_label' => $rombel->tingkat_romawi,
+                'rombel' => $rombel->kode_rombel . ' - ' . $rombel->nama_rombel,
+                'kategori' => $kategori,
+                'total' => $total,
+                'L' => $lakiLaki,
+                'P' => $perempuan,
+            ];
+        }
+
+        ksort($rekapTingkatSiswa);
+        ksort($rekapTingkatKategoriSiswa);
 
         /* ══════════════════════════════════════
            AKTIVITAS TERBARU
@@ -90,6 +154,8 @@ class DashboardController extends Controller
             'totalUser',
             'totalGuru',
             'totalSiswa',
+            'jumlahSiswaLakiLaki',
+            'jumlahSiswaPerempuan',
             'absensiHariIni',
 
             'jumlahAdmin',
@@ -108,6 +174,11 @@ class DashboardController extends Controller
             'tahunAktif',
             'totalRombel',
             'totalMapel',
+
+            'rekapKategoriSiswa',
+            'rekapTingkatSiswa',
+            'rekapTingkatKategoriSiswa',
+            'rekapRombelSiswa',
 
             'aktivitasTerbaru',
             'userTerbaru',

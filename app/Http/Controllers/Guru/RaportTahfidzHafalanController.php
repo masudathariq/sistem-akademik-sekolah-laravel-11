@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Guru;
 use App\Http\Controllers\Controller;
 use App\Models\Guru\RaportTahfidzHafalan;
 use App\Models\Guru\RaportTahfidzSiswaGuru;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,6 +13,28 @@ class RaportTahfidzHafalanController extends Controller
 {
     // Daftar hafalan semua siswa guru
     public function index()
+    {
+        [$siswas, $hafalan] = $this->getHafalanIndexData();
+
+        return view('guru.raport_tahfidz.hafalan.index', compact('siswas','hafalan'));
+    }
+
+    public function cetakPdf()
+    {
+        [$siswas, $hafalan] = $this->getHafalanIndexData();
+
+        $pdf = Pdf::loadView('guru.raport_tahfidz.hafalan.cetak-pdf', compact('siswas', 'hafalan'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+            ]);
+
+        return $pdf->stream('daftar-hafalan-siswa.pdf');
+    }
+
+    private function getHafalanIndexData(): array
     {
         $guru_id = Auth::id();
 
@@ -25,7 +48,7 @@ class RaportTahfidzHafalanController extends Controller
                     ->get()
                     ->keyBy('siswa_id');
 
-        return view('guru.raport_tahfidz.hafalan.index', compact('siswas','hafalan'));
+        return [$siswas, $hafalan];
     }
 
     // Form input hafalan

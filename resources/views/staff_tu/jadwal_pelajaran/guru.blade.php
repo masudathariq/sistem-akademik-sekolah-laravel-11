@@ -195,7 +195,7 @@ $rombelAktif = $tahunAktif
                                             {{ $jadwal->mataPelajaran->nama_mapel }}
                                         </p>
                                         <span class="pill bg-indigo-100 text-indigo-700 mt-1">
-                                            🏫 {{ $jadwal->rombel->tingkat }} {{ $jadwal->rombel->nama_rombel }}
+                                            🏫 {{ $jadwal->rombel->tingkat_romawi }} {{ $jadwal->rombel->nama_rombel }}
                                         </span>
                                     </div>
 
@@ -207,7 +207,7 @@ $rombelAktif = $tahunAktif
                                             class="btn-edit btn-action w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center"
                                             data-id="{{ $jadwal->id }}"
                                             data-mapel="{{ $jadwal->mataPelajaran->nama_mapel }}"
-                                            data-rombel="{{ $jadwal->rombel->tingkat }} {{ $jadwal->rombel->nama_rombel }}"
+                                            data-rombel="{{ $jadwal->rombel->tingkat_romawi }} {{ $jadwal->rombel->nama_rombel }}"
                                             data-mapel-id="{{ $jadwal->mata_pelajaran_id }}"
                                             data-rombel-id="{{ $jadwal->rombel_id }}"
                                             data-jam-mulai="{{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }}"
@@ -224,7 +224,7 @@ $rombelAktif = $tahunAktif
                                             class="btn-delete btn-action w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center"
                                             data-id="{{ $jadwal->id }}"
                                             data-mapel="{{ $jadwal->mataPelajaran->nama_mapel }}"
-                                            data-rombel="{{ $jadwal->rombel->tingkat }} {{ $jadwal->rombel->nama_rombel }}"
+                                            data-rombel="{{ $jadwal->rombel->tingkat_romawi }} {{ $jadwal->rombel->nama_rombel }}"
                                             title="Hapus Jadwal">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -322,7 +322,7 @@ $rombelAktif = $tahunAktif
                             <option value="" disabled>Tidak ada rombel aktif</option>
                         @else
                             @foreach($rombelAktif as $rb)
-                                <option value="{{ $rb->id }}"> {{ $rb->tingkat }} -  {{ $rb->kode_rombel }} ( {{ $rb->nama_rombel }})</option>
+                                <option value="{{ $rb->id }}"> {{ $rb->tingkat_romawi }} -  {{ $rb->kode_rombel }} ( {{ $rb->nama_rombel }})</option>
                             @endforeach
                         @endif
                     </select>

@@ -414,12 +414,7 @@ body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: var
 
         {{-- ===== DAFTAR KELAS ===== --}}
         @php
-            $grouped = $rombels->groupBy(function ($rombel) {
-                if (str_contains($rombel->nama_lengkap, '7')) return 'Kelas VII';
-                if (str_contains($rombel->nama_lengkap, '8')) return 'Kelas VIII';
-                if (str_contains($rombel->nama_lengkap, '9')) return 'Kelas IX';
-                return 'Lainnya';
-            });
+            $grouped = $rombels->groupBy(fn ($rombel) => 'Kelas ' . $rombel->tingkat_romawi);
         @endphp
 
         @forelse($grouped as $tingkat => $dataRombel)

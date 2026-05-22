@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Kepala Sekolah Routes

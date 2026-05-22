@@ -9,29 +9,44 @@ use App\Models\Tatausaha\Rombel;
 use App\Models\Tatausaha\TahunAjaran;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswaExport;
+use App\Exports\SiswaDataExport;
+use App\Exports\SiswaDataPdf;
 use App\Imports\SiswaImport;
 
 class SiswaController extends Controller
 {
     // 📋 INDEX SISWA
-    public function index()
+    public function index(Request $request)
     {
         $tahunAjaranAktif = TahunAjaran::where('is_active', true)->first();
 
-        if (!$tahunAjaranAktif) {
-            return redirect()->route('staff_tu.index')
-                ->with('error', 'Belum ada tahun ajaran aktif');
+        $rombels = collect();
+        if ($tahunAjaranAktif) {
+            $rombels = Rombel::where('tahun_ajaran_id', $tahunAjaranAktif->id)
+                ->orderByRaw("CASE WHEN tingkat IN ('VII','7') THEN 1 WHEN tingkat IN ('VIII','8') THEN 2 WHEN tingkat IN ('IX','9') THEN 3 ELSE 4 END")
+                ->orderBy('kode_rombel')
+                ->get();
         }
 
+        $siswasQuery = Siswa::with('rombelAktif')
+            ->leftJoin('rombels', 'siswas.rombel_id', '=', 'rombels.id')
+            ->select('siswas.*');
 
+        if ($request->filled('tingkat')) {
+            $siswasQuery->where('rombels.tingkat', $request->tingkat);
+        }
 
-        $siswas = Siswa::with('rombelAktif')
-            ->orderBy('nama_siswa')
-                        ->paginate(20); 
+        if ($request->filled('kode_rombel')) {
+            $siswasQuery->where('rombels.kode_rombel', $request->kode_rombel);
+        }
 
+        $siswas = $siswasQuery
+            ->orderByRaw("CASE WHEN rombels.tingkat IN ('VII','7') THEN 1 WHEN rombels.tingkat IN ('VIII','8') THEN 2 WHEN rombels.tingkat IN ('IX','9') THEN 3 ELSE 4 END")
+            ->orderBy('rombels.kode_rombel')
+            ->paginate(100)
+            ->withQueryString();
 
-
-        return view('staff_tu.siswa.index', compact('siswas', 'tahunAjaranAktif'));
+        return view('staff_tu.siswa.index', compact('siswas', 'tahunAjaranAktif', 'rombels'));
     }
 
     // 📝 CREATE
@@ -126,10 +141,33 @@ class SiswaController extends Controller
         return back()->with('success', 'Siswa berhasil dihapus');
     }
 
-    // 📦 EXPORT EXCEL
+    // 📦 EXPORT TEMPLATE EXCEL
     public function export()
     {
-        return Excel::download(new SiswaExport, 'siswa.xlsx');
+        return Excel::download(new SiswaExport, 'TEMPLATE EXPORT DATA SISWA.xlsx');
+    }
+
+    // 📦 EXPORT DATA EXCEL
+    public function exportData(Request $request)
+    {
+        $tingkat = $request->query('tingkat');
+        $kodeRom = $request->query('kode_rombel');
+        $filename = 'DATA_SISWA_' . ($tingkat ? $tingkat : 'SEMUA');
+        if ($kodeRom) {
+            $filename .= '_'.$kodeRom;
+        }
+        $filename .= '_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new SiswaDataExport($tingkat, $kodeRom), $filename);
+    }
+
+    // 📦 EXPORT DATA PDF
+    public function exportDataPdf(Request $request)
+    {
+        $tingkat = $request->query('tingkat');
+        $kodeRom = $request->query('kode_rombel');
+
+        return (new SiswaDataPdf($tingkat, $kodeRom))->download();
     }
 
     // 📥 IMPORT EXCEL

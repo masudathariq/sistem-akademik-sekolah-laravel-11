@@ -458,7 +458,7 @@
                     </div>
                     <div class="dr-info-item">
                         <div class="dr-info-label">Tingkat</div>
-                        <div class="dr-info-value">{{ $rombel->tingkat ?? '—' }}</div>
+                        <div class="dr-info-value">{{ $rombel->tingkat_romawi ?? '—' }}</div>
                     </div>
                     <div class="dr-info-item">
                         <div class="dr-info-label">Tahun Ajaran</div>

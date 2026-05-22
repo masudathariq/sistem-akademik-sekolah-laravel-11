@@ -47,7 +47,7 @@ public function index()
             $q->orderBy('nama_siswa');
         }])
         ->withCount('siswas')
-        ->where('tahun_ajaran_id', $tahunAjaranAktif->id)
+        ->where('tahun_ajaran_id', $tahunAjaranAktif?->id)
         ->get();
 
     return view('staff_tu.penempatan.index', compact(
@@ -81,7 +81,7 @@ public function tempatkan(Request $request)
 
     Siswa::whereIn('id', $request->siswa_id)
         ->update([
-            'rombel_id' => $rombel->id
+            'rombel_id' => $rombel?->id
         ]);
 
     return back()->with(
@@ -109,7 +109,7 @@ public function pindahkan(Request $request)
     $rombelTujuan = Rombel::findOrFail($request->rombel_tujuan_id);
 
     $siswa->update([
-        'rombel_id' => $rombelTujuan->id
+        'rombel_id' => $rombelTujuan?->id
     ]);
 
     return back()->with(
@@ -178,15 +178,15 @@ public function exportSiswa(Rombel $rombel)
 {
     $namaFile = 'Siswa_' . str_replace(' ', '_', $rombel->nama_lengkap) . '.xlsx';
     
-    return Excel::download(new RombelSiswaExport($rombel->id), $namaFile);
+    return Excel::download(new RombelSiswaExport($rombel?->id), $namaFile);
 }
 
 
 // 📄 EXPORT PDF
 public function exportPdf(Rombel $rombel)
 {
-    $pdf = new RombelSiswaPdf($rombel->id);
-    return $pdf->download();
+    $pdf = new RombelSiswaPdf($rombel?->id);
+    return $pdf->stream();
 }
 
 

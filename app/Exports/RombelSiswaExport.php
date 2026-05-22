@@ -8,20 +8,31 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class RombelSiswaExport implements 
-    FromCollection, 
-    WithHeadings, 
-    WithStyles, 
-    WithTitle, 
-    WithColumnWidths,
-    ShouldAutoSize
+class RombelSiswaExport implements
+    FromCollection,
+    WithHeadings,
+    WithStyles,
+    WithTitle,
+    WithColumnWidths
 {
+    // ── Palette ────────────────────────────────────────────────
+    private const NAVY        = '0F2D6B';   // banner background
+    private const ACCENT      = '2563EB';   // table header
+    private const ACCENT_DIM  = 'A8C7FA';   // subtitle text on navy
+    private const LIGHT_BG    = 'F0F4FF';   // info label background
+    private const STRIPE      = 'F8FAFC';   // zebra row
+    private const WHITE       = 'FFFFFF';
+    private const DARK_TEXT   = '0F172A';
+    private const MID_TEXT    = '334155';
+    private const SOFT        = 'E2E8F0';   // info cell border
+    private const TBL_BORDER  = 'CBD5E1';   // data table border
+    private const HDR_BORDER  = '93C5FD';   // header cell border
+
     protected $rombel;
 
     public function __construct($rombelId)
@@ -29,205 +40,261 @@ class RombelSiswaExport implements
         $this->rombel = Rombel::with(['siswas', 'walikelas', 'tahunAjaran'])->findOrFail($rombelId);
     }
 
+    // ── Data ───────────────────────────────────────────────────
+
     public function collection()
     {
-        return $this->rombel->siswas->map(function($siswa, $index) {
+        return $this->rombel->siswas->map(function ($siswa, $index) {
             return [
                 $index + 1,
                 $siswa->nisn,
                 $siswa->nis,
                 $siswa->nama_siswa,
-                $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan',
+                $siswa->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
                 $siswa->tempat_lahir,
                 \Carbon\Carbon::parse($siswa->tanggal_lahir)->format('d-m-Y'),
                 $siswa->alamat,
                 $siswa->ayah,
                 $siswa->ibu,
-                $siswa->wali ?? '-',
+                $siswa->wali ?? '–',
             ];
         });
     }
 
+    /**
+     * Headings are used as the rows BEFORE the data collection.
+     * Layout (10 rows total before data):
+     *   1  – School name banner
+     *   2  – Sub-title
+     *   3  – Accent separator  (empty string)
+     *   4  – Blank spacer      (empty string)
+     *   5  – Info row 1: Rombel / Wali Kelas
+     *   6  – Info row 2: Tahun Ajaran / Jumlah Siswa
+     *   7  – Blank spacer
+     *   8  – Table column headers
+     *
+     * Note: all layout is controlled in styles(); headings() just
+     * supplies the raw cell values so the rows exist in the sheet.
+     */
     public function headings(): array
     {
         return [
-            ['MTs MUHAMMADIYAH 1 NATAR'], // Baris 1
-            ['DAFTAR SISWA'], // Baris 2
-            [''], // Baris 3 kosong
-            ['Rombel: ' . $this->rombel->nama_lengkap], // Baris 4
-            ['Wali Kelas: ' . ($this->rombel->walikelas ? $this->rombel->walikelas->nama : '-')], // Baris 5
-            ['Tahun Ajaran: ' . $this->rombel->tahunAjaran->tahun_ajaran], // Baris 6
-            ['Jumlah Siswa: ' . $this->rombel->siswas->count() . ' siswa'], // Baris 7
-            [''], // Baris 8 kosong
-            // Baris 9: Header Tabel
-            [
-                'No',
-                'NISN',
-                'NIS',
-                'Nama Siswa',
-                'Jenis Kelamin',
-                'Tempat Lahir',
-                'Tanggal Lahir',
-                'Alamat',
-                'Nama Ayah',
-                'Nama Ibu',
-                'Nama Wali',
-            ]
+            /* 1 */ ['MTs MUHAMMADIYAH 1 NATAR'],
+            /* 2 */ ['DAFTAR SISWA'],
+            /* 3 */ [''],   // accent separator
+            /* 4 */ [''],   // spacer
+            /* 5 */ [''],   // info row 1 – values written in styles()
+            /* 6 */ [''],   // info row 2 – values written in styles()
+            /* 7 */ [''],   // spacer
+            /* 8 */ [       // table header
+                        'No', 'NISN', 'NIS', 'Nama Siswa',
+                        'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir',
+                        'Alamat', 'Nama Ayah', 'Nama Ibu', 'Nama Wali',
+                    ],
         ];
     }
 
+    // ── Styles ─────────────────────────────────────────────────
+
     public function styles(Worksheet $sheet)
     {
-        $totalRows = 9 + $this->rombel->siswas->count();
-        
-        // ========== MERGE CELLS UNTUK HEADER ==========
-        $sheet->mergeCells('A1:K1'); // Nama Sekolah
-        $sheet->mergeCells('A2:K2'); // Judul
-        $sheet->mergeCells('A4:K4'); // Rombel
-        $sheet->mergeCells('A5:K5'); // Wali Kelas
-        $sheet->mergeCells('A6:K6'); // Tahun Ajaran
-        $sheet->mergeCells('A7:K7'); // Jumlah Siswa
-        
-        // ========== ROW HEIGHT ==========
-        $sheet->getRowDimension(1)->setRowHeight(30);
-        $sheet->getRowDimension(2)->setRowHeight(25);
-        $sheet->getRowDimension(9)->setRowHeight(22);
-        
-        return [
-            // ========== HEADER SEKOLAH (Baris 1) ==========
-            1 => [
-                'font' => [
-                    'bold' => true,
-                    'size' => 16,
-                    'color' => ['rgb' => '1F2937']
-                ],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
-            
-            // ========== JUDUL DAFTAR SISWA (Baris 2) ==========
-            2 => [
-                'font' => [
-                    'bold' => true,
-                    'size' => 14,
-                    'color' => ['rgb' => '374151']
-                ],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
-            
-            // ========== INFO ROMBEL (Baris 4-7) - SEMUA CENTER ==========
-            4 => [
-                'font' => ['size' => 11, 'bold' => true],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
-            5 => [
-                'font' => ['size' => 11],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
-            6 => [
-                'font' => ['size' => 11],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
-            7 => [
-                'font' => ['size' => 11, 'italic' => true, 'color' => ['rgb' => '6B7280']],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
-            
-            // ========== HEADER TABEL (Baris 9) ==========
-            9 => [
-                'font' => [
-                    'bold' => true,
-                    'size' => 11,
-                    'color' => ['rgb' => 'FFFFFF']
-                ],
-                'fill' => [
-                    'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '2563EB']
-                ],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => '000000'],
-                    ],
-                ],
-            ],
-            
-            // ========== DATA SISWA (Baris 10 dst) ==========
-            '10:' . $totalRows => [
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => 'D1D5DB'],
-                    ],
-                ],
-                'alignment' => [
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-            ],
+        $dataRows  = $this->rombel->siswas->count();
+        $lastData  = 8 + $dataRows;   // header ends at row 8; data starts row 9
+        $summaryRow = $lastData + 1;
+
+        // ── Helpers ──────────────────────────────────────────────
+        $thinBorder = fn($rgb) => [
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => $rgb]]],
         ];
-        
-        // ========== ALIGNMENT KOLOM DATA ==========
-        // Nomor (center)
-        $sheet->getStyle('A10:A' . $totalRows)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            
-        // NISN, NIS (center)
-        $sheet->getStyle('B10:C' . $totalRows)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            
-        // Jenis Kelamin (center)
-        $sheet->getStyle('E10:E' . $totalRows)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            
-        // Tanggal Lahir (center)
-        $sheet->getStyle('G10:G' . $totalRows)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        
-        // ========== ZEBRA STRIPING ==========
-        for ($row = 10; $row <= $totalRows; $row++) {
-            if (($row - 10) % 2 == 0) {
-                $sheet->getStyle('A' . $row . ':K' . $row)->applyFromArray([
-                    'fill' => [
-                        'fillType' => Fill::FILL_SOLID,
-                        'startColor' => ['rgb' => 'F9FAFB']
-                    ]
-                ]);
+        $solidFill  = fn($rgb) => ['fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $rgb]]];
+
+        // ── Row heights ──────────────────────────────────────────
+        $sheet->getRowDimension(1)->setRowHeight(36);   // banner
+        $sheet->getRowDimension(2)->setRowHeight(22);   // sub-title
+        $sheet->getRowDimension(3)->setRowHeight(4);    // accent line
+        $sheet->getRowDimension(4)->setRowHeight(8);    // spacer
+        $sheet->getRowDimension(5)->setRowHeight(22);   // info
+        $sheet->getRowDimension(6)->setRowHeight(22);   // info
+        $sheet->getRowDimension(7)->setRowHeight(8);    // spacer
+        $sheet->getRowDimension(8)->setRowHeight(28);   // table header
+
+        // ── ROW 1: Banner ────────────────────────────────────────
+        $sheet->mergeCells('A1:K1');
+        $sheet->getStyle('A1:K1')->applyFromArray(array_merge(
+            $solidFill(self::NAVY),
+            [
+                'font'      => ['bold' => true, 'size' => 18, 'color' => ['rgb' => self::WHITE], 'name' => 'Arial'],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            ]
+        ));
+
+        // ── ROW 2: Sub-title ─────────────────────────────────────
+        $sheet->mergeCells('A2:K2');
+        $sheet->getStyle('A2:K2')->applyFromArray(array_merge(
+            $solidFill(self::NAVY),
+            [
+                'font'      => ['bold' => true, 'italic' => true, 'size' => 12, 'color' => ['rgb' => self::ACCENT_DIM], 'name' => 'Arial'],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            ]
+        ));
+
+        // ── ROW 3: Accent separator ──────────────────────────────
+        $sheet->mergeCells('A3:K3');
+        $sheet->getStyle('A3:K3')->applyFromArray($solidFill(self::ACCENT));
+
+        // ── ROW 4: Spacer ────────────────────────────────────────
+        $sheet->mergeCells('A4:K4');
+
+        // ── ROWS 5-6: Info grid ──────────────────────────────────
+        // Structure per row:  [A:B]=label  [C:E]=value  [F:G]=label  [H:K]=value
+        // Write info values BEFORE merging (merge clears non-top-left cells)
+        $siswaCount = $this->rombel->siswas->count();
+        $walikelas  = $this->rombel->walikelas?->nama ?? '-';
+
+        $sheet->setCellValue('A5', 'Rombel');
+        $sheet->setCellValue('C5', $this->rombel->nama_lengkap);
+        $sheet->setCellValue('F5', 'Wali Kelas');
+        $sheet->setCellValue('H5', $walikelas);
+
+        $sheet->setCellValue('A6', 'Tahun Ajaran');
+        $sheet->setCellValue('C6', $this->rombel->tahunAjaran->tahun_ajaran);
+        $sheet->setCellValue('F6', 'Jumlah Siswa');
+        $sheet->setCellValue('H6', $siswaCount . ' Siswa');
+
+        foreach ([5, 6] as $r) {
+            // Left label
+            $sheet->mergeCells("A{$r}:B{$r}");
+            $sheet->getStyle("A{$r}:B{$r}")->applyFromArray(array_merge(
+                $solidFill(self::LIGHT_BG),
+                $thinBorder(self::SOFT),
+                [
+                    'font'      => ['bold' => true, 'size' => 10, 'color' => ['rgb' => self::MID_TEXT], 'name' => 'Arial'],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_RIGHT, 'vertical' => Alignment::VERTICAL_CENTER],
+                ]
+            ));
+
+            // Left value
+            $sheet->mergeCells("C{$r}:E{$r}");
+            $sheet->getStyle("C{$r}:E{$r}")->applyFromArray(array_merge(
+                $solidFill(self::WHITE),
+                $thinBorder(self::SOFT),
+                [
+                    'font'      => ['size' => 10, 'color' => ['rgb' => self::DARK_TEXT], 'name' => 'Arial'],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
+                ]
+            ));
+
+            // Right label
+            $sheet->mergeCells("F{$r}:G{$r}");
+            $sheet->getStyle("F{$r}:G{$r}")->applyFromArray(array_merge(
+                $solidFill(self::LIGHT_BG),
+                $thinBorder(self::SOFT),
+                [
+                    'font'      => ['bold' => true, 'size' => 10, 'color' => ['rgb' => self::MID_TEXT], 'name' => 'Arial'],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_RIGHT, 'vertical' => Alignment::VERTICAL_CENTER],
+                ]
+            ));
+
+            // Right value
+            $sheet->mergeCells("H{$r}:K{$r}");
+            $sheet->getStyle("H{$r}:K{$r}")->applyFromArray(array_merge(
+                $solidFill(self::WHITE),
+                $thinBorder(self::SOFT),
+                [
+                    'font'      => ['size' => 10, 'color' => ['rgb' => self::DARK_TEXT], 'name' => 'Arial'],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
+                ]
+            ));
+        }
+
+        // ── ROW 7: Spacer ────────────────────────────────────────
+        $sheet->mergeCells('A7:K7');
+
+        // ── ROW 8: Table header ───────────────────────────────────
+        $hdrSide = new \PhpOffice\PhpSpreadsheet\Style\Color(self::HDR_BORDER);
+        $sheet->getStyle('A8:K8')->applyFromArray(array_merge(
+            $solidFill(self::ACCENT),
+            $thinBorder(self::HDR_BORDER),
+            [
+                'font'      => ['bold' => true, 'size' => 10, 'color' => ['rgb' => self::WHITE], 'name' => 'Arial'],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            ]
+        ));
+
+        // ── ROWS 9 … lastData: Data rows ─────────────────────────
+        $sheet->getStyle("A9:K{$lastData}")->applyFromArray(array_merge(
+            $thinBorder(self::TBL_BORDER),
+            [
+                'font'      => ['size' => 10, 'color' => ['rgb' => self::DARK_TEXT], 'name' => 'Arial'],
+                'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+            ]
+        ));
+
+        // Center: No, NISN, NIS, Jenis Kelamin, Tanggal Lahir
+        foreach (['A', 'B', 'C', 'E', 'G'] as $col) {
+            $sheet->getStyle("{$col}9:{$col}{$lastData}")
+                  ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        }
+
+        // Wrap address
+        $sheet->getStyle("H9:H{$lastData}")
+              ->getAlignment()->setWrapText(true);
+
+        // Zebra striping
+        for ($row = 9; $row <= $lastData; $row++) {
+            if ($row % 2 === 0) {
+                $sheet->getStyle("A{$row}:K{$row}")
+                      ->applyFromArray($solidFill(self::STRIPE));
             }
         }
+
+        // ── Summary row ───────────────────────────────────────────
+        if ($dataRows > 0) {
+            $sheet->getRowDimension($summaryRow)->setRowHeight(22);
+            $sheet->mergeCells("A{$summaryRow}:C{$summaryRow}");
+            $sheet->getStyle("A{$summaryRow}:C{$summaryRow}")->applyFromArray(array_merge(
+                $solidFill(self::NAVY),
+                [
+                    'font'      => ['bold' => true, 'size' => 10, 'color' => ['rgb' => self::WHITE], 'name' => 'Arial'],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+                ]
+            ));
+            $sheet->getCell("A{$summaryRow}")->setValue("Total: {$dataRows} Siswa");
+
+            foreach (['D','E','F','G','H','I','J','K'] as $col) {
+                $sheet->getStyle("{$col}{$summaryRow}")->applyFromArray($solidFill(self::NAVY));
+            }
+        }
+
+        // ── Print setup ───────────────────────────────────────────
+        $sheet->getPageSetup()
+              ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)
+              ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4)
+              ->setFitToPage(true)
+              ->setFitToWidth(1)
+              ->setFitToHeight(0);
+
+        $sheet->getHeaderFooter()
+              ->setOddHeader('&C&B&14MTs MUHAMMADIYAH 1 NATAR');
+        $sheet->getHeaderFooter()
+              ->setOddFooter('&LDicetak: &D &T&RHalaman &P dari &N');
+
+        return [];
     }
+
+    // ── Column widths ──────────────────────────────────────────
 
     public function columnWidths(): array
     {
         return [
             'A' => 5,   // No
-            'B' => 15,  // NISN
-            'C' => 12,  // NIS
-            'D' => 25,  // Nama Siswa
-            'E' => 15,  // Jenis Kelamin
+            'B' => 16,  // NISN
+            'C' => 13,  // NIS
+            'D' => 26,  // Nama Siswa
+            'E' => 14,  // Jenis Kelamin
             'F' => 18,  // Tempat Lahir
-            'G' => 15,  // Tanggal Lahir
-            'H' => 35,  // Alamat
+            'G' => 14,  // Tanggal Lahir
+            'H' => 32,  // Alamat
             'I' => 20,  // Nama Ayah
             'J' => 20,  // Nama Ibu
             'K' => 20,  // Nama Wali

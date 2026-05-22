@@ -10,28 +10,23 @@ use Illuminate\Http\Request;
 
 class KenaikanKelasController extends Controller
 {
-    public function index()
-    {
-        $tahunAktif = TahunAjaran::where('is_active', true)->first();
+public function index()
+{
+    $tahunAktif = TahunAjaran::where('is_active', true)->first();
 
-        if (!$tahunAktif) {
-            return back()->with('error', 'Belum ada tahun ajaran aktif');
-        }
+    $tahunTujuanList = collect();
 
-        // semua tahun kecuali yang aktif
+    if ($tahunAktif) {
         $tahunTujuanList = TahunAjaran::where('id', '!=', $tahunAktif->id)
             ->orderBy('tahun_ajaran')
             ->get();
-
-        if ($tahunTujuanList->isEmpty()) {
-            return back()->with('error', 'Belum ada tahun ajaran tujuan');
-        }
-
-        return view('staff_tu.kenaikan.index', compact(
-            'tahunAktif',
-            'tahunTujuanList'
-        ));
     }
+
+    return view('staff_tu.kenaikan.index', compact(
+        'tahunAktif',
+        'tahunTujuanList'
+    ));
+}
 
 public function proses(Request $request)
 {
@@ -63,8 +58,8 @@ public function proses(Request $request)
             return back()->with(
                 'error',
                 "Rombel tujuan TIDAK ADA:
-                dari {$rombel->tingkat}{$rombel->kode_rombel}
-                ke tingkat ".((int)$rombel->tingkat + 1)."
+                dari {$rombel->tingkat_romawi}{$rombel->kode_rombel}
+                ke tingkat ".\App\Models\Tatausaha\Rombel::formatTingkat((int) $rombel->tingkat + 1)."
                 di tahun {$tahunTujuan->tahun_ajaran}"
             );
         }

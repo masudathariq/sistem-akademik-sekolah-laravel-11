@@ -108,7 +108,7 @@
                             <option value="" disabled selected>-- Pilih kelas / rombel --</option>
                             @foreach($rombels as $rombel)
                                 <option value="{{ $rombel->id }}" {{ old('rombel_id') == $rombel->id ? 'selected' : '' }}>
-                                    Tingkat {{ $rombel->tingkat }} — {{ $rombel->kode_rombel }} {{ $rombel->nama_rombel }}
+                                    Tingkat {{ $rombel->tingkat_romawi }} — {{ $rombel->kode_rombel }} {{ $rombel->nama_rombel }}
                                 </option>
                             @endforeach
                         </select>

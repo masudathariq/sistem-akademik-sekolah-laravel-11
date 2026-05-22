@@ -111,11 +111,12 @@ class RaportTahfidzController extends Controller
                 'isHtml5ParserEnabled' => true,
                 'isRemoteEnabled'      => false,
                 'dpi'                  => 150,
+                'enable_css_float'     => true,
             ]);
 
         $namaFile = 'Raport_Tahfidz_' . str_replace(' ', '_', $data['siswa']->nama_siswa) . '.pdf';
 
-        return $pdf->download($namaFile);
+        return $pdf->stream($namaFile);
     }
 
     // =========================================================
@@ -152,44 +153,41 @@ class RaportTahfidzController extends Controller
             $keterangan[$aspek->id] = $keterangan_map[$nilai[$aspek->id]] ?? '-';
         }
 
-        $hafalan    = RaportTahfidzHafalan::where('siswa_id', $siswa->id)->first();
-        // Hitung rata-rata nilai aspek
-        $nilaiValues = array_filter($nilai, fn($v) => $v > 0); // abaikan yang 0
-        $rataRata = count($nilaiValues) > 0 ? array_sum($nilaiValues) / count($nilaiValues) : 0;
+        $hafalan = RaportTahfidzHafalan::where('siswa_id', $siswa->id)->first();
 
-        // Konversi rata-rata (skala 1-4) ke persentase
+        // Hitung rata-rata nilai aspek (skala 1–4, abaikan 0)
+        $nilaiValues = array_filter($nilai, fn($v) => $v > 0);
+        $rataRata    = count($nilaiValues) > 0
+            ? array_sum($nilaiValues) / count($nilaiValues)
+            : 0;
+
+        // Konversi ke persentase
         $pencapaian = round(($rataRata / 4) * 100);
 
-        // Status berdasarkan rata-rata
-        if ($rataRata >= 3.5) {
-            $status = 'Berkembang Sangat Baik';
-        } elseif ($rataRata >= 2.5) {
-            $status = 'Berkembang Sesuai Harapan';
-        } elseif ($rataRata >= 1.5) {
-            $status = 'Mulai Berkembang';
-        } elseif ($rataRata > 0) {
-            $status = 'Belum Berkembang';
-        } else {
-            $status = '-';
-        }
+        // Status pencapaian
+        $status = match(true) {
+            $rataRata >= 3.5 => 'Berkembang Sangat Baik',
+            $rataRata >= 2.5 => 'Berkembang Sesuai Harapan',
+            $rataRata >= 1.5 => 'Mulai Berkembang',
+            $rataRata > 0    => 'Belum Berkembang',
+            default          => '-',
+        };
 
         $ujian = RaportTahfidzUjian::where('siswa_id', $siswa->id)->get();
         foreach ($ujian as $u) {
             $u->keterangan = $this->keteranganUjian($u->nilai_ujian);
         }
 
-        // Susun kalimat per aspek
+        // Susun catatan otomatis
         $kalimatAspek = '';
         foreach ($aspeks as $aspek) {
-            $namaAspek   = $aspek->nama_aspek;
-            $ket         = $keterangan[$aspek->id] ?? '-';
-            $kalimatAspek .= "Pada aspek {$namaAspek}, Ananda berada pada kategori \"{$ket}\". ";
+            $ket = $keterangan[$aspek->id] ?? '-';
+            $kalimatAspek .= "Pada aspek {$aspek->nama_aspek}, Ananda berada pada kategori \"{$ket}\". ";
         }
 
         $catatan = $hafalan
             ? "Ananda {$siswa->nama_siswa} menunjukkan perkembangan yang menggembirakan dalam program Tahfidz Al-Qur'an dengan pencapaian pada kategori \"{$status}\". {$kalimatAspek}Saat ini, Ananda telah berhasil menyelesaikan sampai Surah {$hafalan->surah_terakhir} Ayat {$hafalan->ayat_terakhir} dan diharapkan dapat meneruskan hingga Surah {$hafalan->surah_lanjut} Ayat {$hafalan->ayat_lanjut} pada periode berikutnya. Dukungan orang tua/wali sangat penting agar Ananda konsisten muraja'ah setiap hari, sehingga keberhasilan program Tahfidz dapat tercapai dengan lancar dan berkualitas. Semoga Allah SWT senantiasa memudahkan Ananda dalam menghafal, memahami, dan mengamalkan Al-Qur'an. Aamiin."
             : null;
-
 
         $namaGuru = Auth::user()->name ?? '-';
         $nuptk    = Auth::user()->guru->nuptk ?? '-';

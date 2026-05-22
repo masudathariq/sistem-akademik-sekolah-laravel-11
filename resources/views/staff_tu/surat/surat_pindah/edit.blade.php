@@ -1,108 +1,511 @@
 @extends('layouts.staff_tu')
 
+@section('title', 'Edit Surat Keterangan Pindah')
+
 @section('content')
 
-<div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
-    <h2 class="text-xl font-bold mb-6">Edit Surat Pindah</h2>
+*{box-sizing:border-box;}
 
-    <form action="{{ route('staff_tu.surat-pindah.update', $surat->id) }}"
-          method="POST">
-        @csrf
-        @method('PUT')
+:root {
+    --navy:     #1e3a8a;
+    --navy-md:  #1d4ed8;
+    --navy-lt:  #dbeafe;
+    --green:    #16a34a;
+    --green-lt: #f0fdf4;
+    --green-bd: #86efac;
+    --red:      #dc2626;
+    --red-lt:   #fff1f2;
+    --red-bd:   #fecdd3;
+    --pink:     #be185d;
+    --pink-lt:  #fdf2f8;
+    --pink-bd:  #f9a8d4;
+    --amber:    #d97706;
+    --amber-lt: #fffbeb;
+    --amber-bd: #fcd34d;
+    --gray-bg:  #f8fafc;
+    --border:   #e2e8f0;
+    --text:     #1e293b;
+    --muted:    #64748b;
+    --hint:     #94a3b8;
+    --radius:   12px;
+    --shadow:   0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+}
 
-        <div class="grid grid-cols-2 gap-4">
+body { font-family: 'IBM Plex Sans', sans-serif; }
 
-            <div>
-                <label>Nomor Surat</label>
-                <input type="text" name="nomor_surat"
-                       value="{{ $surat->nomor_surat }}"
-                       class="w-full border p-2 rounded">
+.rb-page {
+    background: var(--gray-bg);
+    min-height: 100vh;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    color: var(--text);
+}
+
+/* ── TOP BAR ── */
+.top-bar {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+.page-title { display: flex; align-items: center; gap: 12px; }
+.title-icon {
+    width: 44px; height: 44px; background: var(--navy-lt);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.title-text h1 {
+    font-size: 20px; font-weight: 600; color: var(--text);
+    margin: 0 0 3px; letter-spacing: -.02em;
+}
+.title-text p { font-size: 13px; color: var(--muted); margin: 0; }
+.title-text p strong { color: var(--navy-md); font-weight: 600; }
+
+/* ── BACK BUTTON ── */
+.btn-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500; color: var(--muted);
+    text-decoration: none; margin-bottom: 1rem;
+    transition: all .15s;
+}
+.btn-back:hover { color: var(--navy-md); gap: 10px; }
+
+/* ── FORM CARD ── */
+.form-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.form-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: #fdfdfd;
+}
+.form-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin: 0;
+}
+.form-body {
+    padding: 1.5rem;
+}
+.form-group {
+    margin-bottom: 1.25rem;
+}
+.form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 6px;
+}
+.form-group label .required {
+    color: var(--red);
+    margin-left: 2px;
+}
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: white;
+    transition: all .15s ease;
+}
+.form-input:focus {
+    outline: none;
+    border-color: var(--navy-md);
+    box-shadow: 0 0 0 3px rgba(29,78,216,.1);
+}
+.form-input::placeholder {
+    color: var(--hint);
+    font-size: 12px;
+}
+textarea.form-input {
+    resize: vertical;
+    min-height: 80px;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+.form-group-full {
+    grid-column: span 2;
+}
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--navy-md);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s ease;
+    text-decoration: none;
+}
+.btn-primary:hover {
+    background: var(--navy);
+    transform: translateY(-1px);
+}
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s ease;
+    text-decoration: none;
+}
+.btn-secondary:hover {
+    background: var(--gray-bg);
+    color: var(--text);
+}
+
+/* ── ERROR ALERT ── */
+.error-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1rem;
+    background: var(--red-lt);
+    border: 1px solid var(--red-bd);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+.error-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--red);
+}
+.error-content {
+    flex: 1;
+}
+.error-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 6px;
+}
+.error-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 12px;
+    color: #b91c1c;
+}
+.error-list li {
+    margin-bottom: 2px;
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+.section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+}
+.section-desc {
+    font-size: 11px;
+    color: var(--hint);
+    margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+    .rb-page {
+        padding: 1rem;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .form-group-full {
+        grid-column: span 1;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .btn-primary, .btn-secondary {
+        justify-content: center;
+    }
+}
+</style>
+
+<div class="rb-page">
+
+    {{-- ═══ BACK BUTTON ═══ --}}
+    <a href="{{ route('staff_tu.surat-pindah.index') }}" class="btn-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Kembali ke Daftar Surat
+    </a>
+
+    {{-- ═══ TOP BAR ═══ --}}
+    <div class="top-bar">
+        <div class="page-title">
+            <div class="title-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4v16h16V4H4z"/>
+                    <path d="M8 8h8M8 12h6M8 16h4"/>
+                </svg>
             </div>
-
-            <div>
-                <label>Nama Siswa</label>
-                <input type="text" name="nama_siswa"
-                       value="{{ $surat->nama_siswa }}"
-                       class="w-full border p-2 rounded">
+            <div class="title-text">
+                <h1>Edit Surat Keterangan Pindah</h1>
+                <p>Perbaharui data surat keterangan pindah sekolah &mdash; <strong>Formulir Edit</strong></p>
             </div>
+        </div>
+    </div>
 
-            <div>
-                <label>Tempat Lahir</label>
-                <input type="text" name="tempat_lahir"
-                       value="{{ $surat->tempat_lahir }}"
-                       class="w-full border p-2 rounded">
-            </div>
+    {{-- ═══ ERROR VALIDASI ═══ --}}
+    @if ($errors->any())
+    <div class="error-alert">
+        <div class="error-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+        <div class="error-content">
+            <div class="error-title">Terjadi kesalahan pada pengisian form</div>
+            <ul class="error-list">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    @endif
 
-            <div>
-                <label>Tanggal Lahir</label>
-                <input type="date" name="tanggal_lahir"
-                       value="{{ $surat->tanggal_lahir }}"
-                       class="w-full border p-2 rounded">
-            </div>
-
-            <div>
-                <label>NISN</label>
-                <input type="text" name="nisn"
-                       value="{{ $surat->nisn }}"
-                       class="w-full border p-2 rounded">
-            </div>
-
-            <div>
-                <label>Kelas</label>
-                <input type="text" name="kelas"
-                       value="{{ $surat->kelas }}"
-                       class="w-full border p-2 rounded">
-            </div>
-
+    {{-- ═══ FORM CARD ═══ --}}
+    <div class="form-card">
+        <div class="form-header">
+            <h2>✏️ Edit Data Surat Pindah</h2>
         </div>
 
-        <div class="mt-4">
-            <label>Alamat Siswa</label>
-            <textarea name="alamat_siswa"
-                      class="w-full border p-2 rounded">{{ $surat->alamat_siswa }}</textarea>
+        <div class="form-body">
+            <form action="{{ route('staff_tu.surat-pindah.update', $surat->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                {{-- SECTION 1: Data Surat --}}
+                <div class="section-header">
+                    <div class="section-icon" style="background: var(--navy-lt);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2">
+                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="section-title">Data Surat</div>
+                        <div class="section-desc">Nomor dan tanggal penerbitan surat</div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nomor Surat <span class="required">*</span></label>
+                        <input type="text" name="nomor_surat" value="{{ old('nomor_surat', $surat->nomor_surat) }}"
+                               placeholder="Contoh: 001/MTs/2025"
+                               class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Surat <span class="required">*</span></label>
+                        <input type="date" name="tanggal_surat" value="{{ old('tanggal_surat', $surat->tanggal_surat) }}"
+                               class="form-input" required>
+                    </div>
+                </div>
+
+                {{-- SECTION 2: Data Siswa --}}
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <div class="section-icon" style="background: #e0e7ff;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="2">
+                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="section-title">Data Siswa</div>
+                        <div class="section-desc">Identitas lengkap siswa yang pindah</div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nama Siswa <span class="required">*</span></label>
+                        <input type="text" name="nama_siswa" value="{{ old('nama_siswa', $surat->nama_siswa) }}"
+                               placeholder="Nama lengkap siswa"
+                               class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <select name="jenis_kelamin" class="form-input">
+                            <option value="">-- Pilih --</option>
+                            <option value="Laki-laki" {{ old('jenis_kelamin', $surat->jenis_kelamin) == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="Perempuan" {{ old('jenis_kelamin', $surat->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempat Lahir</label>
+                        <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir', $surat->tempat_lahir) }}"
+                               placeholder="Kota/Kabupaten"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $surat->tanggal_lahir) }}"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>NIS</label>
+                        <input type="text" name="nis" value="{{ old('nis', $surat->nis) }}"
+                               placeholder="Nomor Induk Siswa"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>NISN</label>
+                        <input type="text" name="nisn" value="{{ old('nisn', $surat->nisn) }}"
+                               placeholder="Nomor Induk Siswa Nasional"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Kelas Saat Ini</label>
+                        <input type="text" name="kelas" value="{{ old('kelas', $surat->kelas) }}"
+                               placeholder="Contoh: IX A"
+                               class="form-input">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label>Alamat Siswa</label>
+                        <textarea name="alamat_siswa" class="form-input" rows="2"
+                                  placeholder="Alamat lengkap tempat tinggal siswa">{{ old('alamat_siswa', $surat->alamat_siswa) }}</textarea>
+                    </div>
+                </div>
+
+                {{-- SECTION 3: Data Orang Tua / Wali --}}
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <div class="section-icon" style="background: #d1fae5;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+                            <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="section-title">Data Orang Tua / Wali</div>
+                        <div class="section-desc">Informasi wali yang bertanggung jawab</div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group form-group-full">
+                        <label>Nama Orang Tua / Wali</label>
+                        <input type="text" name="nama_wali" value="{{ old('nama_wali', $surat->nama_wali) }}"
+                               placeholder="Nama lengkap orang tua/wali"
+                               class="form-input">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label>Pekerjaan Orang Tua / Wali</label>
+                        <input type="text" name="pekerjaan_wali" value="{{ old('pekerjaan_wali', $surat->pekerjaan_wali) }}"
+                               placeholder="Contoh: Wiraswasta, PNS, Guru"
+                               class="form-input">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label>Alamat Orang Tua / Wali</label>
+                        <textarea name="alamat_wali" class="form-input" rows="2"
+                                  placeholder="Alamat lengkap orang tua/wali">{{ old('alamat_wali', $surat->alamat_wali) }}</textarea>
+                    </div>
+                </div>
+
+                {{-- SECTION 4: Data Pindah Sekolah --}}
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <div class="section-icon" style="background: #fed7aa;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2">
+                            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="section-title">Data Pindah Sekolah</div>
+                        <div class="section-desc">Tujuan dan alasan kepindahan</div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group form-group-full">
+                        <label>Sekolah Tujuan</label>
+                        <input type="text" name="sekolah_tujuan" value="{{ old('sekolah_tujuan', $surat->sekolah_tujuan) }}"
+                               placeholder="Nama sekolah tujuan"
+                               class="form-input">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label>Alasan Pindah</label>
+                        <input type="text" name="alasan_pindah" value="{{ old('alasan_pindah', $surat->alasan_pindah) }}"
+                               placeholder="Contoh: Ikut orang tua pindah domisili"
+                               class="form-input">
+                    </div>
+                </div>
+
+                {{-- Tombol Aksi --}}
+                <div class="form-actions">
+                    <a href="{{ route('staff_tu.surat-pindah.index') }}" class="btn-secondary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                        Batal
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/>
+                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/>
+                        </svg>
+                        Update Surat
+                    </button>
+                </div>
+
+            </form>
         </div>
-
-        <div class="mt-4">
-            <label>Nama Orang Tua</label>
-            <input type="text" name="nama_ortu"
-                   value="{{ $surat->nama_ortu }}"
-                   class="w-full border p-2 rounded">
-        </div>
-
-        <div class="mt-4">
-            <label>Pekerjaan Orang Tua</label>
-            <input type="text" name="pekerjaan_ortu"
-                   value="{{ $surat->pekerjaan_ortu }}"
-                   class="w-full border p-2 rounded">
-        </div>
-
-        <div class="mt-4">
-            <label>Alamat Orang Tua</label>
-            <textarea name="alamat_ortu"
-                      class="w-full border p-2 rounded">{{ $surat->alamat_ortu }}</textarea>
-        </div>
-
-        <div class="mt-4">
-            <label>Tujuan Sekolah</label>
-            <input type="text" name="tujuan_sekolah"
-                   value="{{ $surat->tujuan_sekolah }}"
-                   class="w-full border p-2 rounded">
-        </div>
-
-        <div class="mt-6 flex justify-end space-x-2">
-            <a href="{{ route('staff_tu.surat-pindah.index') }}"
-               class="bg-gray-500 text-white px-4 py-2 rounded">
-                Kembali
-            </a>
-
-            <button type="submit"
-                    class="bg-green-600 text-white px-4 py-2 rounded">
-                Update
-            </button>
-        </div>
-
-    </form>
+    </div>
 
 </div>
 

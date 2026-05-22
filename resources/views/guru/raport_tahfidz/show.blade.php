@@ -14,13 +14,10 @@
                class="flex items-center gap-1 px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-lg hover:bg-gray-200 transition">
                 ← Kembali
             </a>
-            <a href="{{ route('guru.raport-tahfidz.cetak', $siswa->id) }}"
-               class="flex items-center gap-1 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition">
-                🖨️ Cetak Raport
-            </a>
             <a href="{{ route('guru.raport_tahfidz.download_pdf', $siswa->id) }}"
+                target="_blank"
                class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition">
-                ⬇️ Download PDF
+                📄 Cetak Raport
             </a>
         </div>
     </div>
@@ -34,7 +31,7 @@
             <div>
                 <p class="text-white font-bold text-lg leading-tight">{{ $siswa->nama_siswa }}</p>
                 <p class="text-green-100 text-sm">
-                    Kelas {{ $siswa->rombel->tingkat ?? '-' }} &bull; {{ $siswa->rombel->nama_rombel ?? '-' }} &bull; NIS: {{ $siswa->nis ?? '-' }}
+                    Kelas {{ $siswa->rombel->tingkat_romawi ?? '-' }} &bull; {{ $siswa->rombel->nama_rombel ?? '-' }} &bull; NIS: {{ $siswa->nis ?? '-' }}
                 </p>
             </div>
         </div>

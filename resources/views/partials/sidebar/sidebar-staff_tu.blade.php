@@ -51,6 +51,11 @@
                           {{ request()->routeIs('staff_tu.rombel.*') ? 'bg-blue-800 text-white font-medium' : '' }}">
                     <span class="text-blue-400 text-[10px]">▸</span> Rombongan Belajar
                 </a>
+                <a href="{{ route('staff_tu.wali-kelas.index') }}"
+                   class="flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-blue-700 transition text-blue-200
+                          {{ request()->routeIs('staff_tu.wali-kelas.*') ? 'bg-blue-800 text-white font-medium' : '' }}">
+                    <span class="text-blue-400 text-[10px]">▸</span> Data Wali Kelas
+                </a>
                 <a href="{{ route('staff_tu.rombel-kategori.index') }}"
                    class="flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-blue-700 transition text-blue-200
                           {{ request()->routeIs('staff_tu.rombel-kategori.*') ? 'bg-blue-800 text-white font-medium' : '' }}">
@@ -142,7 +147,7 @@
                 </a>
                 <a href="{{ route('staff_tu.surat_masuk.index') }}"
                    class="flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-lg hover:bg-blue-700 transition text-blue-200
-                          {{ request()->routeIs('staff_tu.surat-masuk.*') ? 'bg-blue-800 text-white font-medium' : '' }}">
+                          {{ request()->routeIs('staff_tu.surat_masuk.*') ? 'bg-blue-800 text-white font-medium' : '' }}">
                     <span class="text-blue-400 text-[10px]">▸</span> Surat Masuk
                 </a>
             </div>

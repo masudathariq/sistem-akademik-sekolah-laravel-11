@@ -340,7 +340,7 @@ body { overscroll-behavior-y: none; }
                 <div class="rombel-meta-row">
                     <div>
                         <div class="rombel-meta-label">Tingkat</div>
-                        <div class="rombel-meta-val">{{ $rombel->tingkat }}</div>
+                        <div class="rombel-meta-val">{{ $rombel->tingkat_romawi }}</div>
                     </div>
                     <div>
                         <div class="rombel-meta-label">Rombel</div>

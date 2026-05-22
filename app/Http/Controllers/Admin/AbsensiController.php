@@ -213,7 +213,7 @@ public function cetakPdf(Request $request)
         'persenHadir' => $persenHadir,
     ]);
 
-    return $pdf->download("Rekap_Absensi_{$guru->nama}_{$bulan}_{$tahun}.pdf");
+    return $pdf->stream("Rekap_Absensi_{$guru->nama}_{$bulan}_{$tahun}.pdf");
 }
 }
 

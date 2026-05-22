@@ -36,6 +36,7 @@ Route::middleware(['auth', 'role:staff_tu'])
         });
 
         // Rombel
+        Route::get('wali-kelas', [RombelController::class, 'waliKelas'])->name('wali-kelas.index');
         Route::resource('rombel', RombelController::class);
 
         Route::prefix('siswa')->name('siswa.')->group(function () {
@@ -45,6 +46,8 @@ Route::middleware(['auth', 'role:staff_tu'])
             Route::post('/', [SiswaController::class, 'store'])->name('store');
             // Import & Export
             Route::get('export', [SiswaController::class, 'export'])->name('export');
+            Route::get('export-data', [SiswaController::class, 'exportData'])->name('exportData');
+            Route::get('export-pdf', [SiswaController::class, 'exportDataPdf'])->name('exportPdf');
             Route::post('import', [SiswaController::class, 'import'])->name('import');
             Route::get('/{siswa}', [SiswaController::class, 'show'])->name('show');
             Route::get('/{siswa}/edit', [SiswaController::class, 'edit'])->name('edit');
@@ -102,6 +105,8 @@ Route::middleware(['auth', 'role:staff_tu'])
             ->name('rekap_absen.rekap_absen_siswa_cetak');
 
 
+            
+
         // Surat Aktif
         Route::resource('surat-aktif', SuratAktifController::class);
 
@@ -120,15 +125,15 @@ Route::middleware(['auth', 'role:staff_tu'])
             [SuratAktifController::class, 'cetak']
         )->name('surat-aktif.cetak');
 
+        Route::get(
+    'surat-pindah/{id}/cetak',
+    [SuratPindahController::class, 'cetak']
+)->name('surat-pindah.cetak');
+
         Route::resource(
             'surat-pindah',
             SuratPindahController::class
         );
-
-        Route::get(
-            'surat-pindah/{id}/cetak',
-            [SuratPindahController::class, 'cetak']
-        )->name('surat-pindah.cetak');
 
 
         // ✅ DOWNLOAD HARUS DI ATAS

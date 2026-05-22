@@ -4,6 +4,7 @@ namespace App\Models\Tatausaha;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\TabunganSiswa;
 use App\Models\Tatausaha\Rombel;
 use App\Models\Guru\AbsenSiswa;
 use App\Models\Guru\RaportTahfidzNilai;
@@ -48,6 +49,11 @@ class Siswa extends Model
     public function absenSiswa()
     {
         return $this->hasMany(AbsenSiswa::class, 'siswa_id');
+    }
+
+    public function tabungan()
+    {
+        return $this->hasOne(TabunganSiswa::class, 'siswa_id');
     }
 
     // Helper

@@ -154,9 +154,9 @@
             <td class="right">JUMLAH (Rp)</td>
         </tr>
 
-        {{-- GAJI POKOK --}}
+        {{-- honor mengajar --}}
         <tr>
-            <td>Gaji Pokok</td>
+            <td>honor mengajar</td>
             <td class="right">
                 {{ number_format($slip->gaji_pokok, 0, ',', '.') }}
             </td>

@@ -60,7 +60,7 @@
             @forelse($rekapTingkatKategori as $tingkat => $dataKategori)
                 @foreach($dataKategori as $kategori => $data)
                 <tr>
-                    <td class="tc" style="font-weight:600;">Kelas {{ $tingkat }}</td>
+                    <td class="tc" style="font-weight:600;">Kelas {{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</td>
                     <td class="tc">
                         <span class="kategori-badge {{ $kategori === 'pondok' ? 'badge-pondok' : 'badge-umum' }}">
                             {{ ucfirst($kategori) }}
@@ -84,7 +84,7 @@
         @foreach($dataKategori as $kategori => $data)
         <div class="rtk-card">
             <div class="rtk-card-left">
-                <div class="rtk-card-tingkat">Kelas {{ $tingkat }}</div>
+                <div class="rtk-card-tingkat">Kelas {{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</div>
                 <div style="margin-top:4px;">
                     <span class="kategori-badge {{ $kategori === 'pondok' ? 'badge-pondok' : 'badge-umum' }}">
                         {{ ucfirst($kategori) }}

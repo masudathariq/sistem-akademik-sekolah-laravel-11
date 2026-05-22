@@ -3,304 +3,895 @@
 @section('title', 'Tambah Surat Keluar')
 
 @section('content')
+
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
-    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-    body { background: #f9fafb; }
+*{
+    box-sizing:border-box;
+}
 
-    .wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+:root{
+    --navy:#1e3a8a;
+    --navy-md:#2563eb;
+    --navy-soft:#dbeafe;
 
-    /* back */
-    .back {
-        display: inline-flex; align-items: center; gap: 6px;
-        font-size: .8125rem; font-weight: 500; color: #6b7280;
-        text-decoration: none; margin-bottom: 1.5rem;
+    --green:#16a34a;
+    --green-dark:#15803d;
+
+    --red:#dc2626;
+    --red-soft:#fff1f2;
+
+    --gray-bg:#f8fafc;
+    --border:#e2e8f0;
+
+    --text:#0f172a;
+    --muted:#64748b;
+    --hint:#94a3b8;
+
+    --radius:24px;
+
+    --shadow:
+        0 10px 35px rgba(15,23,42,.06);
+}
+
+body{
+    font-family:'IBM Plex Sans',sans-serif;
+    background:var(--gray-bg);
+}
+
+/* ====================================
+PAGE
+==================================== */
+
+.surat-page{
+    width:100%;
+    min-height:100vh;
+    padding:2rem 3rem 4rem;
+    background:var(--gray-bg);
+}
+
+/* ====================================
+HEADER
+==================================== */
+
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    margin-bottom:2rem;
+    flex-wrap:wrap;
+}
+
+.page-title{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.title-icon{
+    width:64px;
+    height:64px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 14px 30px rgba(22,163,74,.22);
+}
+
+.title-text h1{
+    margin:0;
+    font-size:32px;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:-.03em;
+}
+
+.title-text p{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:14px;
+}
+
+/* ====================================
+ERROR
+==================================== */
+
+.error-alert{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    background:var(--red-soft);
+    border:1px solid #fecdd3;
+    border-radius:22px;
+    padding:1rem 1.25rem;
+    margin-bottom:1.5rem;
+}
+
+.error-title{
+    font-size:14px;
+    font-weight:700;
+    color:#b91c1c;
+    margin-bottom:6px;
+}
+
+.error-list{
+    margin:0;
+    padding-left:18px;
+    color:#be123c;
+    font-size:13px;
+}
+
+/* ====================================
+CARD
+==================================== */
+
+.form-card{
+    width:100%;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:30px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.form-header{
+    padding:1.5rem 2rem;
+    border-bottom:1px solid var(--border);
+    background:
+        linear-gradient(
+            135deg,
+            #f0fdf4 0%,
+            #ffffff 100%
+        );
+}
+
+.form-header h2{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+    color:var(--green-dark);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+}
+
+.form-body{
+    padding:2rem;
+}
+
+/* ====================================
+PREVIEW
+==================================== */
+
+.preview-card{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:1.25rem;
+    border-radius:22px;
+    background:linear-gradient(135deg,#f0fdf4,#ffffff);
+    border:1px solid #bbf7d0;
+    margin-bottom:2rem;
+}
+
+.preview-icon{
+    width:70px;
+    height:70px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    flex-shrink:0;
+    box-shadow:0 12px 24px rgba(22,163,74,.18);
+}
+
+.preview-content{
+    flex:1;
+}
+
+.preview-label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:5px;
+}
+
+.preview-title{
+    font-size:22px;
+    font-weight:700;
+    color:var(--green-dark);
+    margin-bottom:4px;
+}
+
+.preview-meta{
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* ====================================
+SECTION
+==================================== */
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:1.5rem;
+}
+
+.section-icon{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:#f0fdf4;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.section-title h3{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.section-title p{
+    margin:3px 0 0;
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* ====================================
+GRID
+==================================== */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1.5rem;
+}
+
+.full-width{
+    grid-column:span 2;
+}
+
+/* ====================================
+FORM
+==================================== */
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    margin-bottom:10px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.required{
+    color:var(--red);
+}
+
+.form-input,
+.form-select,
+.form-textarea,
+.form-file{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px 16px;
+    font-size:14px;
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--text);
+    background:white;
+    transition:.2s ease;
+}
+
+.form-input,
+.form-select,
+.form-file{
+    height:56px;
+}
+
+.form-textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus,
+.form-file:focus{
+    outline:none;
+    border-color:#16a34a;
+    box-shadow:0 0 0 4px rgba(22,163,74,.10);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder{
+    color:var(--hint);
+}
+
+.form-hint{
+    margin-top:8px;
+    font-size:12px;
+    color:var(--hint);
+}
+
+.input-error{
+    border-color:#dc2626 !important;
+}
+
+/* ====================================
+DIVIDER
+==================================== */
+
+.section-divider{
+    height:1px;
+    background:var(--border);
+    margin:2.5rem 0;
+}
+
+/* ====================================
+BUTTONS
+==================================== */
+
+.form-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    margin-top:2rem;
+    flex-wrap:wrap;
+}
+
+.btn-secondary{
+    height:54px;
+    padding:0 24px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:white;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    transition:.2s ease;
+}
+
+.btn-secondary:hover{
+    background:#f8fafc;
+}
+
+.btn-primary{
+    height:54px;
+    padding:0 28px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    color:white;
+    font-size:14px;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 28px rgba(22,163,74,.20);
+}
+
+/* ====================================
+RESPONSIVE
+==================================== */
+
+@media(max-width:992px){
+
+    .surat-page{
+        padding:1.25rem;
     }
-    .back:hover { color: #111827; }
 
-    /* header */
-    .header { margin-bottom: 1.75rem; }
-    .header h1 { font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 4px; }
-    .header p  { font-size: .875rem; color: #6b7280; margin: 0; }
-
-    /* card */
-    .card {
-        background: #fff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        overflow: hidden;
+    .form-grid{
+        grid-template-columns:1fr;
     }
 
-    /* section inside card */
-    .section {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #f3f4f6;
-    }
-    .section:last-of-type { border-bottom: none; }
-    .section-title {
-        font-size: .6875rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .06em;
-        color: #9ca3af;
-        margin-bottom: 1rem;
+    .full-width{
+        grid-column:span 1;
     }
 
-    /* grid */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .col-span-2 { grid-column: span 2; }
-
-    /* field */
-    .field { display: flex; flex-direction: column; gap: 5px; }
-
-    label {
-        font-size: .8125rem;
-        font-weight: 600;
-        color: #374151;
-    }
-    label .req { color: #ef4444; margin-left: 2px; }
-
-    .input, select.input, textarea.input {
-        width: 100%;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 8px;
-        padding: .5625rem .75rem;
-        font-size: .875rem;
-        color: #111827;
-        background: #fff;
-        outline: none;
-        transition: border-color .15s, box-shadow .15s;
-        appearance: none;
-        resize: vertical;
-    }
-    .input:focus, select.input:focus, textarea.input:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59,130,246,.1);
-    }
-    .input.error { border-color: #ef4444; }
-
-    .select-wrap { position: relative; }
-    .select-wrap::after {
-        content: '';
-        pointer-events: none;
-        position: absolute;
-        right: .75rem; top: 50%;
-        transform: translateY(-50%);
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        border-top: 5px solid #9ca3af;
+    .form-actions{
+        flex-direction:column;
     }
 
-    .hint { font-size: .75rem; color: #9ca3af; }
-    .err-msg { font-size: .75rem; color: #ef4444; }
+    .btn-primary,
+    .btn-secondary{
+        width:100%;
+        justify-content:center;
+    }
 
-    /* file input */
-    .file-input {
-        width: 100%;
-        font-size: .8125rem;
-        color: #374151;
-        cursor: pointer;
+    .title-text h1{
+        font-size:25px;
     }
-    .file-input::file-selector-button {
-        background: #f3f4f6;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 6px;
-        padding: 5px 12px;
-        font-size: .8125rem;
-        font-weight: 600;
-        color: #374151;
-        cursor: pointer;
-        margin-right: 10px;
-        transition: background .15s;
-    }
-    .file-input::file-selector-button:hover { background: #e5e7eb; }
 
-    /* footer actions */
-    .form-footer {
-        padding: 1.25rem 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: .75rem;
-        background: #fafafa;
-        border-top: 1px solid #f3f4f6;
+    .preview-card{
+        flex-direction:column;
+        align-items:flex-start;
     }
-    .btn-cancel {
-        background: #fff;
-        border: 1.5px solid #e5e7eb;
-        color: #374151;
-        font-size: .875rem;
-        font-weight: 600;
-        padding: .5625rem 1.25rem;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: background .15s;
-    }
-    .btn-cancel:hover { background: #f9fafb; }
-    .btn-submit {
-        background: #1d4ed8;
-        color: #fff;
-        font-size: .875rem;
-        font-weight: 600;
-        padding: .5625rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background .15s;
-    }
-    .btn-submit:hover { background: #1e40af; }
 
-    @media (max-width: 560px) {
-        .grid-2 { grid-template-columns: 1fr; }
-        .col-span-2 { grid-column: span 1; }
-    }
+}
 </style>
 
-<div class="wrap">
+<div class="surat-page">
 
-    <a href="{{ route('staff_tu.surat_keluar.index') }}" class="back">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Kembali
-    </a>
+    {{-- HEADER --}}
+    <div class="top-bar">
 
-    <div class="header">
-        <h1>Tambah Surat Keluar</h1>
-        <p>Buat entri surat keluar baru</p>
+        <div class="page-title">
+
+            <div class="title-icon">
+                <svg width="30"
+                     height="30"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="white"
+                     stroke-width="2.2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <path d="M12 18v-6"/>
+                    <path d="M9 15l3 3 3-3"/>
+                </svg>
+            </div>
+
+            <div class="title-text">
+                <h1>Tambah Surat Keluar</h1>
+                <p>
+                    Kelola dan arsipkan surat keluar secara profesional
+                </p>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="card">
-        <form action="{{ route('staff_tu.surat_keluar.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+    {{-- ERROR --}}
+    @if ($errors->any())
 
-            {{-- Identitas Surat --}}
-            <div class="section">
-                <div class="section-title">Identitas Surat</div>
-                <div class="grid-2">
+    <div class="error-alert">
 
-                    <div class="field">
-                        <label>Nomor Surat <span class="req">*</span></label>
-                        <input type="text" name="nomor_surat"
+        <div>
+            <svg width="22"
+                 height="22"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="#dc2626"
+                 stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+
+        <div>
+
+            <div class="error-title">
+                Terjadi kesalahan pada pengisian form
+            </div>
+
+            <ul class="error-list">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+
+        </div>
+
+    </div>
+
+    @endif
+
+    {{-- FORM --}}
+    <form action="{{ route('staff_tu.surat_keluar.store') }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        @csrf
+
+        <div class="form-card">
+
+            <div class="form-header">
+                <h2>Formulir Surat Keluar</h2>
+            </div>
+
+            <div class="form-body">
+
+                {{-- PREVIEW --}}
+                <div class="preview-card">
+
+                    <div class="preview-icon">
+                        <svg width="32"
+                             height="32"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="white"
+                             stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+
+                    <div class="preview-content">
+
+                        <div class="preview-label">
+                            Arsip surat keluar baru
+                        </div>
+
+                        <div class="preview-title">
+                            Input Surat Keluar
+                        </div>
+
+                        <div class="preview-meta">
+                            Lengkapi informasi surat dengan benar sebelum disimpan
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {{-- IDENTITAS --}}
+                <div class="section-title">
+
+                    <div class="section-icon">
+                        <svg width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="#16a34a"
+                             stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h3>Identitas Surat</h3>
+                        <p>Informasi utama surat keluar</p>
+                    </div>
+
+                </div>
+
+                <div class="form-grid">
+
+                    {{-- NOMOR --}}
+                    <div class="form-group">
+
+                        <label>
+                            Nomor Surat
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               name="nomor_surat"
                                value="{{ old('nomor_surat') }}"
                                placeholder="001/SK/TU/II/2026"
-                               class="input {{ $errors->has('nomor_surat') ? 'error' : '' }}"
+                               class="form-input {{ $errors->has('nomor_surat') ? 'input-error' : '' }}"
                                required>
-                        @error('nomor_surat')
-                            <span class="err-msg">{{ $message }}</span>
-                        @enderror
+
                     </div>
 
-                    <div class="field">
+                    {{-- JENIS --}}
+                    <div class="form-group">
+
                         <label>Jenis Surat</label>
-                        <div class="select-wrap">
-                            <select name="jenis" class="input">
-                                <option value="">— Pilih Jenis —</option>
-                                @foreach(['Surat Undangan','Surat Edaran','Surat Keterangan','Surat Tugas','Surat Keputusan','Surat Pemberitahuan','Surat Permohonan','Surat Pengantar','Lainnya'] as $jenis)
-                                    <option value="{{ $jenis }}" {{ old('jenis') == $jenis ? 'selected' : '' }}>{{ $jenis }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+
+                        <select name="jenis"
+                                class="form-select">
+
+                            <option value="">-- Pilih Jenis --</option>
+
+                            @foreach([
+                                'Surat Undangan',
+                                'Surat Edaran',
+                                'Surat Keterangan',
+                                'Surat Tugas',
+                                'Surat Keputusan',
+                                'Surat Pemberitahuan',
+                                'Surat Permohonan',
+                                'Surat Pengantar',
+                                'Lainnya'
+                            ] as $jenis)
+
+                                <option value="{{ $jenis }}"
+                                    {{ old('jenis') == $jenis ? 'selected' : '' }}>
+
+                                    {{ $jenis }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
                     </div>
 
-                    <div class="field">
-                        <label>Tanggal Surat <span class="req">*</span></label>
-                        <input type="date" name="tanggal_surat"
+                    {{-- TANGGAL SURAT --}}
+                    <div class="form-group">
+
+                        <label>
+                            Tanggal Surat
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="date"
+                               name="tanggal_surat"
                                value="{{ old('tanggal_surat', date('Y-m-d')) }}"
-                               class="input" required>
+                               class="form-input"
+                               required>
+
                     </div>
 
-                    <div class="field">
-                        <label>Tanggal Keluar <span class="req">*</span></label>
-                        <input type="date" name="tanggal_keluar"
+                    {{-- TANGGAL KELUAR --}}
+                    <div class="form-group">
+
+                        <label>
+                            Tanggal Keluar
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="date"
+                               name="tanggal_keluar"
                                value="{{ old('tanggal_keluar', date('Y-m-d')) }}"
-                               class="input" required>
+                               class="form-input"
+                               required>
+
                     </div>
 
-                    <div class="field">
-                        <label>Tujuan <span class="req">*</span></label>
-                        <input type="text" name="tujuan"
+                    {{-- TUJUAN --}}
+                    <div class="form-group">
+
+                        <label>
+                            Tujuan
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               name="tujuan"
                                value="{{ old('tujuan') }}"
                                placeholder="Nama instansi / penerima"
-                               class="input" required>
+                               class="form-input"
+                               required>
+
                     </div>
 
-                    <div class="field">
+                    {{-- PENANDATANGAN --}}
+                    <div class="form-group">
+
                         <label>Penandatangan</label>
-                        <div class="select-wrap">
-                            <select name="penandatangan" class="input">
-                                <option value="">— Pilih Penandatangan —</option>
-                                @foreach(['Kepala Sekolah','Wakil Kepala Sekolah','Kepala Tata Usaha','Lainnya'] as $ttd)
-                                    <option value="{{ $ttd }}" {{ old('penandatangan') == $ttd ? 'selected' : '' }}>{{ $ttd }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+
+                        <select name="penandatangan"
+                                class="form-select">
+
+                            <option value="">-- Pilih Penandatangan --</option>
+
+                            @foreach([
+                                'Kepala Sekolah',
+                                'Wakil Kepala Sekolah',
+                                'Kepala Tata Usaha',
+                                'Lainnya'
+                            ] as $ttd)
+
+                                <option value="{{ $ttd }}"
+                                    {{ old('penandatangan') == $ttd ? 'selected' : '' }}>
+
+                                    {{ $ttd }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
                     </div>
 
-                    <div class="field col-span-2">
-                        <label>Perihal <span class="req">*</span></label>
-                        <input type="text" name="perihal"
+                    {{-- PERIHAL --}}
+                    <div class="form-group full-width">
+
+                        <label>
+                            Perihal
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               name="perihal"
                                value="{{ old('perihal') }}"
                                placeholder="Perihal surat"
-                               class="input" required>
+                               class="form-input"
+                               required>
+
                     </div>
 
                 </div>
-            </div>
 
-            {{-- Isi & Keterangan --}}
-            <div class="section">
-                <div class="section-title">Isi & Keterangan</div>
-                <div class="grid-2">
+                <div class="section-divider"></div>
 
-                    <div class="field col-span-2">
+                {{-- ISI --}}
+                <div class="section-title">
+
+                    <div class="section-icon">
+                        <svg width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="#16a34a"
+                             stroke-width="2">
+                            <line x1="8" y1="6" x2="21" y2="6"/>
+                            <line x1="8" y1="12" x2="21" y2="12"/>
+                            <line x1="8" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h3>Isi & Keterangan</h3>
+                        <p>Ringkasan isi surat dan catatan tambahan</p>
+                    </div>
+
+                </div>
+
+                <div class="form-grid">
+
+                    {{-- ISI --}}
+                    <div class="form-group full-width">
+
                         <label>Isi Surat</label>
-                        <textarea name="isi" rows="4" class="input"
+
+                        <textarea name="isi"
+                                  class="form-textarea"
                                   placeholder="Ringkasan isi surat...">{{ old('isi') }}</textarea>
+
                     </div>
 
-                    <div class="field col-span-2">
+                    {{-- KETERANGAN --}}
+                    <div class="form-group full-width">
+
                         <label>Keterangan</label>
-                        <textarea name="keterangan" rows="3" class="input"
+
+                        <textarea name="keterangan"
+                                  class="form-textarea"
                                   placeholder="Keterangan tambahan...">{{ old('keterangan') }}</textarea>
+
                     </div>
 
                 </div>
-            </div>
 
-            {{-- Lampiran & Status --}}
-            <div class="section">
-                <div class="section-title">Lampiran & Status</div>
-                <div class="grid-2">
+                <div class="section-divider"></div>
 
-                    <div class="field">
+                {{-- LAMPIRAN --}}
+                <div class="section-title">
+
+                    <div class="section-icon">
+                        <svg width="20"
+                             height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="#16a34a"
+                             stroke-width="2">
+                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.9-9.9"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h3>Lampiran & Status</h3>
+                        <p>Upload file dan pengaturan status surat</p>
+                    </div>
+
+                </div>
+
+                <div class="form-grid">
+
+                    {{-- LAMPIRAN --}}
+                    <div class="form-group">
+
                         <label>Lampiran</label>
-                        <input type="file" name="lampiran"
+
+                        <input type="file"
+                               name="lampiran"
                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                               class="file-input">
-                        <span class="hint">PDF, DOC, DOCX, JPG, PNG · Maks. 5MB</span>
+                               class="form-file">
+
+                        <div class="form-hint">
+                            Format: PDF, DOC, DOCX, JPG, PNG · Maksimal 5MB
+                        </div>
+
                     </div>
 
-                    <div class="field">
-                        <label>Status <span class="req">*</span></label>
-                        <div class="select-wrap">
-                            <select name="status" class="input" required>
-                                <option value="Draf"     {{ old('status','Draf') == 'Draf'     ? 'selected' : '' }}>Draf</option>
-                                <option value="Terkirim" {{ old('status')         == 'Terkirim' ? 'selected' : '' }}>Terkirim</option>
-                            </select>
-                        </div>
+                    {{-- STATUS --}}
+                    <div class="form-group">
+
+                        <label>
+                            Status
+                            <span class="required">*</span>
+                        </label>
+
+                        <select name="status"
+                                class="form-select"
+                                required>
+
+                            <option value="Draf"
+                                {{ old('status','Draf') == 'Draf' ? 'selected' : '' }}>
+                                Draf
+                            </option>
+
+                            <option value="Terkirim"
+                                {{ old('status') == 'Terkirim' ? 'selected' : '' }}>
+                                Terkirim
+                            </option>
+
+                        </select>
+
                     </div>
 
                 </div>
+
+                {{-- BUTTON --}}
+                <div class="form-actions">
+
+                    <a href="{{ route('staff_tu.surat_keluar.index') }}"
+                       class="btn-secondary">
+
+                        <svg width="16"
+                             height="16"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+
+                        Batal
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primary">
+
+                        <svg width="16"
+                             height="16"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2.4">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+
+                        Simpan Surat
+
+                    </button>
+
+                </div>
+
             </div>
 
-            {{-- Actions --}}
-            <div class="form-footer">
-                <a href="{{ route('staff_tu.surat_keluar.index') }}" class="btn-cancel">Batal</a>
-                <button type="submit" class="btn-submit">Simpan Surat</button>
-            </div>
+        </div>
 
-        </form>
-    </div>
+    </form>
 
 </div>
+
 @endsection

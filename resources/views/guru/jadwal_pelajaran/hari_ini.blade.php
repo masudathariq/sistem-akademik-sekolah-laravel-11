@@ -100,7 +100,7 @@
                 <div class="flex-1 flex flex-wrap items-center gap-2">
                     <span class="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Tingkat {{ $jadwal->rombel->tingkat }} — {{ $jadwal->rombel->nama_rombel }}
+                        Tingkat {{ $jadwal->rombel->tingkat_romawi }} — {{ $jadwal->rombel->nama_rombel }}
                     </span>
                     <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     <span class="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full">
@@ -170,7 +170,7 @@
                     <div class="bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2.5">
                         <p class="text-[10px] text-indigo-400 font-semibold uppercase tracking-wider mb-0.5">Kelas</p>
                         <p class="text-sm font-bold text-indigo-800 leading-tight">
-                            Tingkat {{ $jadwal->rombel->tingkat }}
+                            Tingkat {{ $jadwal->rombel->tingkat_romawi }}
                         </p>
                         <p class="text-xs text-indigo-600 leading-tight">{{ $jadwal->rombel->nama_rombel }}</p>
                     </div>

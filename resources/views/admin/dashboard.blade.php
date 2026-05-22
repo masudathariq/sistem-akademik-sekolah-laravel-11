@@ -92,6 +92,194 @@
         @endforeach
     </div>
 
+    {{-- REKAP DATA SISWA --}}
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-1 bg-white/90 backdrop-blur border border-white rounded-2xl shadow-md overflow-hidden">
+            <div class="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
+                <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+                <p class="text-sm font-bold text-slate-700">Rekap Siswa</p>
+            </div>
+            <div class="p-5 space-y-4">
+                <div class="rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-100">Total Seluruh Siswa</p>
+                    <p class="mt-2 text-4xl font-extrabold leading-none">{{ number_format($totalSiswa ?? 0) }}</p>
+                    <div class="mt-4 grid grid-cols-2 gap-2">
+                        <div class="rounded-xl bg-white/15 border border-white/20 px-3 py-2">
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-100">Laki-laki</p>
+                            <p class="text-xl font-extrabold">{{ number_format($jumlahSiswaLakiLaki ?? 0) }}</p>
+                        </div>
+                        <div class="rounded-xl bg-white/15 border border-white/20 px-3 py-2">
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-100">Perempuan</p>
+                            <p class="text-xl font-extrabold">{{ number_format($jumlahSiswaPerempuan ?? 0) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                @php
+                    $kategoriCards = [
+                        'reguler' => ['label' => 'Reguler', 'color' => 'blue'],
+                        'pondok' => ['label' => 'Pondok', 'color' => 'violet'],
+                    ];
+                    $kategoriStyle = [
+                        'blue' => ['box' => 'bg-blue-50 border-blue-200', 'title' => 'text-blue-700', 'pillL' => 'bg-blue-100 text-blue-700', 'pillP' => 'bg-sky-100 text-sky-700'],
+                        'violet' => ['box' => 'bg-violet-50 border-violet-200', 'title' => 'text-violet-700', 'pillL' => 'bg-violet-100 text-violet-700', 'pillP' => 'bg-fuchsia-100 text-fuchsia-700'],
+                    ];
+                @endphp
+                @foreach($kategoriCards as $key => $meta)
+                    @php
+                        $data = $rekapKategoriSiswa[$key] ?? ['total' => 0, 'L' => 0, 'P' => 0];
+                        $style = $kategoriStyle[$meta['color']];
+                    @endphp
+                    <div class="rounded-2xl border {{ $style['box'] }} p-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Kategori</p>
+                                <p class="text-lg font-extrabold {{ $style['title'] }}">{{ $meta['label'] }}</p>
+                            </div>
+                            <p class="text-3xl font-extrabold {{ $style['title'] }}">{{ number_format($data['total']) }}</p>
+                        </div>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="text-xs font-bold rounded-full px-3 py-1 {{ $style['pillL'] }}">L {{ number_format($data['L']) }}</span>
+                            <span class="text-xs font-bold rounded-full px-3 py-1 {{ $style['pillP'] }}">P {{ number_format($data['P']) }}</span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="xl:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="bg-white/90 backdrop-blur border border-white rounded-2xl shadow-md overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                    <p class="text-sm font-bold text-slate-700">Siswa per Tingkat</p>
+                    <span class="text-xs text-slate-400 font-semibold">{{ count($rekapTingkatSiswa ?? []) }} tingkat</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-400">
+                            <tr>
+                                <th class="px-5 py-3 text-left">Tingkat</th>
+                                <th class="px-3 py-3 text-center">Total</th>
+                                <th class="px-3 py-3 text-center">L</th>
+                                <th class="px-3 py-3 text-center">P</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($rekapTingkatSiswa ?? [] as $tingkat => $data)
+                            <tr class="hover:bg-slate-50/70">
+                                <td class="px-5 py-3 font-bold text-slate-700">Kelas {{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</td>
+                                <td class="px-3 py-3 text-center font-extrabold text-blue-700">{{ number_format($data['total']) }}</td>
+                                <td class="px-3 py-3 text-center font-bold text-sky-600">{{ number_format($data['L']) }}</td>
+                                <td class="px-3 py-3 text-center font-bold text-pink-600">{{ number_format($data['P']) }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-5 py-8 text-center text-sm text-slate-400">Belum ada data tingkat</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white/90 backdrop-blur border border-white rounded-2xl shadow-md overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                    <p class="text-sm font-bold text-slate-700">Tingkat per Kategori</p>
+                    <span class="text-xs text-slate-400 font-semibold">Reguler dan Pondok</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-400">
+                            <tr>
+                                <th class="px-5 py-3 text-left">Tingkat</th>
+                                <th class="px-3 py-3 text-center">Kategori</th>
+                                <th class="px-3 py-3 text-center">Total</th>
+                                <th class="px-3 py-3 text-center">L</th>
+                                <th class="px-3 py-3 text-center">P</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($rekapTingkatKategoriSiswa ?? [] as $tingkat => $dataKategori)
+                                @foreach($dataKategori as $kategori => $data)
+                                <tr class="hover:bg-slate-50/70">
+                                    <td class="px-5 py-3 font-bold text-slate-700">Kelas {{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</td>
+                                    <td class="px-3 py-3 text-center">
+                                        <span class="rounded-full px-2.5 py-1 text-[11px] font-bold capitalize {{ $kategori === 'pondok' ? 'bg-violet-100 text-violet-700' : 'bg-blue-100 text-blue-700' }}">
+                                            {{ $kategori }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-3 text-center font-extrabold text-blue-700">{{ number_format($data['total']) }}</td>
+                                    <td class="px-3 py-3 text-center font-bold text-sky-600">{{ number_format($data['L']) }}</td>
+                                    <td class="px-3 py-3 text-center font-bold text-pink-600">{{ number_format($data['P']) }}</td>
+                                </tr>
+                                @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">Belum ada data tingkat per kategori</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white/90 backdrop-blur border border-white rounded-2xl shadow-md overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-4 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <p class="text-sm font-bold text-slate-700">Siswa per Rombel</p>
+            </div>
+            <span class="text-xs text-slate-400 font-semibold">{{ count($rekapRombelSiswa ?? []) }} rombel</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-400">
+                    <tr>
+                        <th class="px-5 py-3 text-left">Rombel</th>
+                        <th class="px-3 py-3 text-center">Tingkat</th>
+                        <th class="px-3 py-3 text-center">Kategori</th>
+                        <th class="px-3 py-3 text-center">Total</th>
+                        <th class="px-3 py-3 text-center">Laki-laki</th>
+                        <th class="px-3 py-3 text-center">Perempuan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($rekapRombelSiswa ?? [] as $row)
+                    <tr class="hover:bg-slate-50/70">
+                        <td class="px-5 py-3 font-bold text-slate-700">{{ $row['rombel'] }}</td>
+                        <td class="px-3 py-3 text-center text-slate-600">Kelas {{ $row['tingkat_label'] ?? \App\Models\Tatausaha\Rombel::formatTingkat($row['tingkat']) }}</td>
+                        <td class="px-3 py-3 text-center">
+                            @if($row['kategori'])
+                                <span class="rounded-full px-2.5 py-1 text-[11px] font-bold capitalize {{ $row['kategori'] === 'pondok' ? 'bg-violet-100 text-violet-700' : 'bg-blue-100 text-blue-700' }}">
+                                    {{ $row['kategori'] }}
+                                </span>
+                            @else
+                                <span class="rounded-full px-2.5 py-1 text-[11px] font-bold bg-slate-100 text-slate-500">Belum diatur</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-3 text-center font-extrabold text-blue-700">{{ number_format($row['total']) }}</td>
+                        <td class="px-3 py-3 text-center font-bold text-sky-600">{{ number_format($row['L']) }}</td>
+                        <td class="px-3 py-3 text-center font-bold text-pink-600">{{ number_format($row['P']) }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-5 py-8 text-center text-sm text-slate-400">Belum ada data rombel</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     {{-- MIDDLE ROW: Distribusi Role + Status Sistem --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 

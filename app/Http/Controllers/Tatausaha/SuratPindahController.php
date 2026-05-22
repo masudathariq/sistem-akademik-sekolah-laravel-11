@@ -79,7 +79,7 @@ public function update(Request $request, $id)
     $surat->update($request->all());
 
     return redirect()
-        ->route('staff_tu.surat.surat-pindah.index')
+        ->route('staff_tu.surat-pindah.index')
         ->with('success', 'Surat berhasil diperbarui');
 }
 
@@ -93,12 +93,12 @@ public function destroy($id)
     $surat->delete();
 
     return redirect()
-        ->route('staff_tu.surat.surat-pindah.index')
+        ->route('staff_tu.surat-pindah.index')
         ->with('success', 'Surat berhasil dihapus');
 }
 
 
-    public function cetak($id)
+public function cetak($id)
 {
     $surat = \App\Models\Tatausaha\SuratPindahSiswa::findOrFail($id);
 
@@ -107,7 +107,11 @@ public function destroy($id)
         compact('surat')
     );
 
-    return $pdf->stream('surat_pindah.pdf');
+    return $pdf->stream(
+        'SK_Pindah_' .
+        str_replace(' ', '_', $surat->nama_siswa) .
+        '.pdf'
+    );
 }
 
 }

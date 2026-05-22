@@ -6,9 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/css/absen.css',  // ← Tambahkan ini
                 'resources/js/app.js',
-                //'resources/js/absen.js',    // ← Tambahkan ini
             ],
             refresh: true,
         }),

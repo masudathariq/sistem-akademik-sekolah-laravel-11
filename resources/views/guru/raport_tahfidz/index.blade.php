@@ -1,1223 +1,682 @@
 @extends('layouts.guru')
 
-@section('title', 'Raport Tahfidz Siswa')
+@section('title', 'Raport Tahfidz - Kelola Nilai Hafalan Santri')
 
 @section('content')
 
+{{-- Font & Style Ramah Pengguna --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap');
-
-    :root {
-        --navy: #020659;
-        --navy-light: #1a237e;
-        --gray-50: #F8FAFC;
-        --gray-100: #F1F5F9;
-        --gray-200: #E2E8F0;
-        --gray-400: #94A3B8;
-        --gray-500: #64748B;
-        --gray-700: #334155;
-        --gray-800: #1E293B;
-        --gray-900: #0F172A;
-        --blue: #2563EB;
-        --blue-light: #EFF6FF;
-        --green: #047857;
-        --green-light: #D1FAE5;
-        --amber: #B45309;
-        --amber-light: #FEF3C7;
-        --purple: #5B21B6;
-        --purple-light: #EDE9FE;
-        --radius-sm: 10px;
-        --radius-md: 14px;
-        --radius-lg: 20px;
-        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
-        --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
-    }
-
     * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
     }
 
+    :root {
+        --primary: #0d9488;
+        --primary-dark: #0f766e;
+        --primary-light: #ccfbf1;
+        --primary-bg: #f0fdfa;
+        --success: #059669;
+        --success-light: #d1fae5;
+        --warning: #d97706;
+        --warning-light: #fef3c7;
+        --info: #0284c7;
+        --info-light: #e0f2fe;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --radius: 1rem;
+        --radius-sm: 0.75rem;
+        --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08);
+    }
+
     body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Nunito', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         background: var(--gray-50);
     }
 
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(14px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeRow {
-        from {
-            opacity: 0;
-            transform: translateY(5px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* ======================================================
-   MOBILE FIRST
-   ====================================================== */
-
-    .page-wrap {
-        padding: 0;
-        max-width: 100%;
-        padding-bottom: 40px;
-    }
-
-    /* ---- HERO ---- */
-    .hero-card {
-        background: linear-gradient(135deg, var(--navy) 0%, #1a237e 60%, #283593 100%);
-        padding: 40px 24px;
-        color: white;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* decorative circles tetap */
-    .hero-card::before {
-        content: '';
-        position: absolute;
-        top: -60px;
-        right: -60px;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-    .hero-card::after {
-        content: '';
-        position: absolute;
-        bottom: -40px;
-        left: -40px;
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.04);
-    }
-
-    /* wrapper */
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        max-width: 1200px;
+    .dashboard-container {
+        max-width: 1400px;
         margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 24px;
+        padding: 1.5rem;
     }
 
-    /* text */
-    .hero-sub {
-        display: inline-block;
-        font-size: 13px;
-        letter-spacing: .5px;
-        opacity: .85;
-        margin-bottom: 8px;
+    /* Welcome Card */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--primary) 0%, #0f766e 100%);
+        border-radius: var(--radius);
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.75rem;
+        color: white;
+        box-shadow: var(--shadow-md);
     }
 
-    .hero-title {
-        font-size: 28px;
+    .welcome-title {
+        font-size: 1.5rem;
         font-weight: 700;
-        margin: 0 0 8px 0;
-    }
-
-    .hero-desc {
-        font-size: 15px;
-        opacity: .9;
-        max-width: 480px;
-    }
-
-    /* button area */
-    .hero-actions {
+        margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
+        gap: 0.5rem;
     }
 
-    /* button refinement (tanpa ubah warna utama) */
-    .btn-hero-primary {
+    .welcome-desc {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        line-height: 1.5;
+        max-width: 600px;
+    }
+
+    /* Banner Panduan (Baru) */
+    .guide-banner {
         background: white;
-        color: var(--navy);
-        padding: 12px 22px;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 14px;
-        text-decoration: none;
-        transition: all .25s ease;
-    }
-
-    .btn-hero-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
-    }
-
-    .hero-sub {
-        font-size: 11px;
-        opacity: 0.7;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 20px;
-        font-weight: 800;
-        margin: 2px 0 4px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-desc {
-        font-size: 12px;
-        opacity: 0.8;
-        position: relative;
-        z-index: 1;
-        margin-bottom: 16px;
-    }
-
-    .hero-actions {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        position: relative;
-        z-index: 1;
-    }
-
-    .btn-hero-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 9px 16px;
-        border-radius: var(--radius-sm);
-        background: white;
-        color: var(--navy);
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        text-decoration: none;
-        border: none;
-        transition: opacity 0.15s, transform 0.15s;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn-hero-primary:hover {
-        opacity: 0.92;
-        color: var(--navy);
-        text-decoration: none;
-    }
-
-    .btn-hero-primary:active {
-        transform: scale(0.97);
-    }
-
-    /* ---- BODY ---- */
-    .page-body {
-        padding: 14px 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    /* ---- SECTION TITLE ---- */
-    .section-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--gray-700);
-        margin: 0 0 10px 2px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    /* ---- QUICK ACTIONS ---- */
-    .actions-bar {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        animation: slideUp 0.35s ease both;
-    }
-
-    .action-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border-radius: var(--radius-sm);
-        font-size: 12px;
-        font-weight: 700;
-        text-decoration: none;
-        background: white;
-        color: var(--gray-700);
-        border: 1.5px solid var(--gray-200);
-        box-shadow: var(--shadow-sm);
-        transition: border-color 0.15s, color 0.15s, background 0.15s;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .action-chip:hover {
-        border-color: var(--navy);
-        color: var(--navy);
-        background: #EEF2FF;
-        text-decoration: none;
-    }
-
-    /* ---- STAT CARDS ---- */
-    .stat-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        animation: slideUp 0.4s ease 0.05s both;
-    }
-
-    .stat-card {
-        background: white;
-        border: 1.5px solid var(--gray-200);
-        border-radius: var(--radius-md);
-        padding: 14px 12px;
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: var(--radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-
-    .si-blue {
-        background: var(--blue-light);
-    }
-
-    .si-green {
-        background: var(--green-light);
-    }
-
-    .si-amber {
-        background: var(--amber-light);
-    }
-
-    .si-purple {
-        background: var(--purple-light);
-    }
-
-    .stat-num {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 24px;
-        font-weight: 800;
-        line-height: 1;
-        margin-bottom: 2px;
-    }
-
-    .sn-blue {
-        color: var(--blue);
-    }
-
-    .sn-green {
-        color: var(--green);
-    }
-
-    .sn-amber {
-        color: var(--amber);
-    }
-
-    .sn-purple {
-        color: var(--purple);
-    }
-
-    .stat-lbl {
-        font-size: 11px;
-        color: var(--gray-500);
-        font-weight: 600;
-    }
-
-    /* ---- SECTION BAR ---- */
-    .section-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .count-badge {
-        background: #EEF2FF;
-        color: var(--navy);
-        border-radius: 99px;
-        padding: 3px 10px;
-        font-size: 11px;
-        font-weight: 700;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    /* ---- MOBILE: SISWA CARDS ---- */
-    .siswa-list-mobile {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .siswa-card-mobile {
-        background: white;
-        border: 1.5px solid var(--gray-200);
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-        animation: slideUp 0.4s ease both;
-        transition: transform 0.18s, box-shadow 0.18s;
-    }
-
-    .siswa-card-mobile:nth-child(1) {
-        animation-delay: 0.03s;
-    }
-
-    .siswa-card-mobile:nth-child(2) {
-        animation-delay: 0.06s;
-    }
-
-    .siswa-card-mobile:nth-child(3) {
-        animation-delay: 0.09s;
-    }
-
-    .siswa-card-mobile:nth-child(n+4) {
-        animation-delay: 0.12s;
-    }
-
-    /* Card header */
-    .card-name-bar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 14px;
-        background: var(--gray-50);
-        border-bottom: 1px solid var(--gray-100);
-    }
-
-    .card-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: var(--radius-sm);
-        background: #EEF2FF;
-        border: 1px solid #C7D2FE;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 15px;
-        font-weight: 800;
-        color: var(--navy);
-        flex-shrink: 0;
-    }
-
-    .card-num {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--gray-400);
-        margin-bottom: 2px;
-    }
-
-    .card-name {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--gray-900);
-    }
-
-    .card-meta {
-        font-size: 11px;
-        color: var(--gray-400);
-    }
-
-    /* Card body */
-    .card-body {
-        padding: 10px 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .card-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .card-row-label {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--gray-400);
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-
-    /* Hafalan pill */
-    .hafalan-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 3px 10px;
-        border-radius: 99px;
-        font-size: 11px;
-        font-weight: 700;
-        background: var(--blue-light);
-        color: var(--blue);
-    }
-
-    .hafalan-empty {
-        font-size: 11px;
-        color: var(--gray-400);
-        font-style: italic;
-    }
-
-    .ujian-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 2px 8px;
-        border-radius: 99px;
-        font-size: 11px;
-        font-weight: 700;
-        background: var(--purple-light);
-        color: var(--purple);
-    }
-
-    /* Aspek progress */
-    .aspek-wrap {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .progress-bar-wrap {
-        width: 70px;
-        height: 5px;
-        background: var(--gray-200);
-        border-radius: 3px;
-        overflow: hidden;
-    }
-
-    .progress-bar-fill {
-        height: 100%;
-        border-radius: 3px;
-    }
-
-    .pb-done {
-        background: var(--green);
-    }
-
-    .pb-partial {
-        background: var(--amber);
-    }
-
-    .aspek-chip {
-        font-size: 11px;
-        font-weight: 700;
-        padding: 2px 9px;
-        border-radius: 99px;
-    }
-
-    .ac-done {
-        background: var(--green-light);
-        color: var(--green);
-    }
-
-    .ac-partial {
-        background: var(--amber-light);
-        color: var(--amber);
-    }
-
-    .ac-none {
-        background: var(--gray-100);
-        color: var(--gray-400);
+        border-radius: var(--radius);
         border: 1px solid var(--gray-200);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.75rem;
+        box-shadow: var(--shadow);
     }
 
-    /* Card actions */
-    .card-actions {
-        display: flex;
-        gap: 8px;
-        padding: 10px 14px;
-        border-top: 1px solid var(--gray-100);
-    }
-
-    .btn-sm {
-        flex: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        padding: 8px 10px;
-        border-radius: var(--radius-sm);
-        font-size: 12px;
-        font-weight: 700;
-        text-decoration: none;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        transition: opacity 0.15s;
-        border: 1.5px solid transparent;
-    }
-
-    .btn-sm:hover {
-        opacity: 0.85;
-        text-decoration: none;
-    }
-
-    .btn-detail {
-        background: var(--blue-light);
-        color: var(--blue);
-        border-color: #BFDBFE;
-    }
-
-    .btn-print {
-        background: var(--green-light);
-        color: var(--green);
-        border-color: #A7F3D0;
-    }
-
-    /* ---- DESKTOP TABLE ---- */
-    .table-card {
-        background: white;
-        border: 1.5px solid var(--gray-200);
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .table-header {
-        padding: 12px 16px;
-        background: var(--gray-50);
-        border-bottom: 1.5px solid var(--gray-100);
+    .guide-title {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 0.75rem;
         display: flex;
         align-items: center;
+        gap: 0.5rem;
+    }
+
+    .guide-steps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
         justify-content: space-between;
     }
 
-    .table-header-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 13px;
-        font-weight: 800;
-        color: var(--gray-900);
+    .step-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--gray-50);
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--gray-700);
     }
 
-    table {
+    .step-number {
+        width: 28px;
+        height: 28px;
+        background: var(--primary);
+        color: white;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.75rem;
+    }
+
+    .step-text {
+        flex: 1;
+    }
+
+    .step-text strong {
+        color: var(--gray-800);
+    }
+
+    @media (max-width: 900px) {
+        .guide-steps {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+
+    /* Action Grid */
+    .action-buttons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .action-btn {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: var(--shadow);
+        position: relative;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
+    }
+
+    .action-emoji {
+        font-size: 1.75rem;
+        width: 48px;
+        height: 48px;
+        background: var(--primary-bg);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-info h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .action-info p {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    /* Badge nomor urut pada tombol */
+    .step-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary);
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        width: 20px;
+        height: 20px;
+        border-radius: 999px;
+        margin-left: 0.25rem;
+    }
+
+    /* Statistik */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-box {
+        background: white;
+        border-radius: var(--radius-sm);
+        padding: 1.25rem;
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--shadow);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--gray-500);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-hint {
+        font-size: 0.7rem;
+        color: var(--gray-400);
+        margin-top: 0.5rem;
+    }
+
+    /* Table */
+    .table-section {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--gray-200);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .section-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+        background: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+
+    .total-badge {
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .siswa-table {
         width: 100%;
         border-collapse: collapse;
     }
 
-    thead tr {
-        background: linear-gradient(135deg, var(--navy), #1a237e);
-    }
-
-    th {
-        padding: 11px 14px;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 10px;
+    .siswa-table th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        background: var(--gray-50);
+        font-size: 0.7rem;
         font-weight: 700;
-        color: rgba(255, 255, 255, 0.85);
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        text-align: left;
-        white-space: nowrap;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-200);
     }
 
-    th.right {
-        text-align: right;
-    }
-
-    th.center {
-        text-align: center;
-    }
-
-    tbody tr {
+    .siswa-table td {
+        padding: 1rem 1.5rem;
         border-bottom: 1px solid var(--gray-100);
-        transition: background 0.12s;
-        animation: fadeRow 0.3s ease both;
-    }
-
-    tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    tbody tr:hover {
-        background: #EEF2FF;
-    }
-
-    tbody tr:nth-child(1) {
-        animation-delay: 0.03s;
-    }
-
-    tbody tr:nth-child(2) {
-        animation-delay: 0.06s;
-    }
-
-    tbody tr:nth-child(3) {
-        animation-delay: 0.09s;
-    }
-
-    tbody tr:nth-child(n+4) {
-        animation-delay: 0.12s;
-    }
-
-    td {
-        padding: 13px 14px;
-        font-size: 13px;
+        font-size: 0.875rem;
         vertical-align: middle;
     }
 
-    td.right {
-        text-align: right;
+    .siswa-table tr:hover td {
+        background: var(--gray-50);
     }
 
-    td.center {
-        text-align: center;
-    }
-
-    .td-num {
-        width: 30px;
-        height: 30px;
-        border-radius: 9px;
-        background: #EEF2FF;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        color: var(--navy);
-    }
-
-    .student-cell {
+    .profil-siswa {
         display: flex;
         align-items: center;
-        gap: 11px;
+        gap: 0.875rem;
     }
 
-    .tbl-avatar {
-        width: 36px;
-        height: 36px;
+    .avatar-siswa {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         border-radius: var(--radius-sm);
-        background: #EEF2FF;
-        border: 1px solid #C7D2FE;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 15px;
-        font-weight: 800;
-        color: var(--navy);
+        font-weight: 700;
+        font-size: 1rem;
+        color: white;
         flex-shrink: 0;
     }
 
-    .student-name {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 13px;
+    .info-siswa .nama {
         font-weight: 700;
-        color: var(--gray-900);
-        margin-bottom: 2px;
+        color: var(--gray-800);
+        margin-bottom: 0.125rem;
     }
 
-    .student-meta {
-        font-size: 11px;
-        color: var(--gray-400);
+    .info-siswa .detail {
+        font-size: 0.7rem;
+        color: var(--gray-500);
     }
 
-    .row-actions {
+    .label {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        justify-content: flex-end;
+        gap: 0.5rem;
+        padding: 0.375rem 0.875rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
     }
 
-    /* ---- MOBILE / DESKTOP TOGGLE ---- */
-    .mobile-only {
-        display: block;
+    .label-hafalan {
+        background: var(--primary-light);
+        color: var(--primary);
     }
 
-    .desktop-only {
-        display: none;
+    .label-nilai {
+        background: var(--success-light);
+        color: var(--success);
     }
 
-    /* ---- EMPTY STATE ---- */
-    .empty-state {
-        background: white;
-        border: 1.5px solid var(--gray-200);
-        border-radius: var(--radius-md);
-        padding: 60px 24px;
-        text-align: center;
-        box-shadow: var(--shadow-sm);
-        animation: slideUp 0.35s ease both;
+    .label-ujian {
+        background: var(--warning-light);
+        color: var(--warning);
     }
 
-    .empty-icon-wrap {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: #EEF2FF;
+    .label-kosong {
+        background: var(--gray-100);
+        color: var(--gray-500);
+    }
+
+    .tombol-group {
         display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tombol {
+        display: inline-flex;
         align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        margin: 0 auto 16px;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .tombol-detail {
+        background: white;
+        border: 1px solid var(--gray-300);
+        color: var(--gray-700);
+    }
+
+    .tombol-detail:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-400);
+    }
+
+    .tombol-cetak {
+        background: var(--primary);
+        color: white;
+        border: none;
+    }
+
+    .tombol-cetak:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .empty-card {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--gray-200);
+    }
+
+    .empty-illustration {
+        font-size: 4rem;
+        margin-bottom: 1rem;
     }
 
     .empty-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 16px;
-        font-weight: 800;
+        font-size: 1.25rem;
+        font-weight: 700;
         color: var(--gray-800);
-        margin-bottom: 8px;
+        margin-bottom: 0.5rem;
     }
 
     .empty-desc {
-        font-size: 13px;
         color: var(--gray-500);
-        line-height: 1.65;
-        margin-bottom: 20px;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
     }
 
-    .btn-empty-cta {
+    .btn-pilih-siswa {
+        background: var(--primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        background: linear-gradient(135deg, var(--navy), #1a237e);
-        color: white;
-        padding: 11px 22px;
-        border-radius: var(--radius-sm);
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        text-decoration: none;
-        box-shadow: 0 4px 14px rgba(2, 6, 89, 0.25);
-        transition: opacity 0.15s;
+        gap: 0.5rem;
     }
 
-    .btn-empty-cta:hover {
-        opacity: 0.9;
-        color: white;
-        text-decoration: none;
-    }
-
-    /* ======================================================
-   DESKTOP ≥768px
-   ====================================================== */
-    @media (min-width: 768px) {
-
-        .page-wrap {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 24px 48px;
-        }
-
-        /* Hero */
-        .hero-card {
-            border-radius: var(--radius-lg);
-            margin: 24px 0 0;
-            padding: 32px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-        }
-
-        .hero-card::before {
-            width: 260px;
-            height: 260px;
-            top: -80px;
-            right: -60px;
-        }
-
-        .hero-sub {
-            font-size: 13px;
-        }
-
-        .hero-title {
-            font-size: 28px;
-        }
-
-        .hero-desc {
-            font-size: 14px;
-            margin-bottom: 0;
-        }
-
-        .hero-actions {
-            flex-direction: column;
-            align-items: flex-end;
-            flex-shrink: 0;
-        }
-
-        /* Body */
-        .page-body {
-            padding: 24px 0;
-            gap: 16px;
-        }
-
-        .section-title {
-            font-size: 15px;
-        }
-
-        /* Quick actions */
-        .action-chip {
-            font-size: 13px;
-            padding: 9px 16px;
-        }
-
-        /* Stats: 4 cols */
-        .stat-row {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-        }
-
-        .stat-card {
-            padding: 18px 16px;
-            border-radius: var(--radius-lg);
-        }
-
-        .stat-num {
-            font-size: 30px;
-        }
-
-        .stat-lbl {
-            font-size: 12px;
-        }
-
-        /* Toggle */
-        .mobile-only {
-            display: none;
-        }
-
-        .desktop-only {
-            display: block;
-        }
-
-        /* Table */
-        .table-card {
-            border-radius: var(--radius-lg);
-        }
-
-        .table-header {
-            padding: 16px 20px;
-        }
-
-        .table-header-title {
-            font-size: 15px;
-        }
-
-        th {
-            padding: 13px 16px;
-            font-size: 11px;
-        }
-
-        td {
-            padding: 14px 16px;
-        }
-
-        .tbl-avatar {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
-        }
-
-        .student-name {
-            font-size: 14px;
-        }
-
-        /* Empty */
-        .empty-state {
-            border-radius: var(--radius-lg);
-            padding: 80px 40px;
+    @media (max-width: 1000px) {
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        overscroll-behavior-y: none;
-    }
-
-    a {
-        -webkit-tap-highlight-color: transparent;
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+        .welcome-card {
+            padding: 1.25rem;
+        }
+        .stats-row {
+            grid-template-columns: 1fr;
+        }
+        .tombol-group {
+            justify-content: flex-start;
+            margin-top: 0.5rem;
+        }
+        .siswa-table th, 
+        .siswa-table td {
+            padding: 0.75rem 1rem;
+        }
     }
 </style>
 
-<div class="page-wrap">
+<div class="dashboard-container">
 
-    {{-- ===== HERO ===== --}}
-    <div class="hero-card">
-        <div class="hero-content">
-
-            <div class="hero-text">
-                <span class="hero-sub">Dashboard Guru</span>
-                <h1 class="hero-title">📖 Raport Tahfidz Siswa</h1>
-                <p class="hero-desc">
-                    Pantau perkembangan hafalan Al-Qur'an seluruh siswa
-                </p>
-            </div>
-
-            <div class="hero-actions">
-                <a href="{{ route('guru.raport-tahfidz-siswa.create') }}"
-                    class="btn-hero-primary">
-                    + Tambah Siswa
-                </a>
-            </div>
-
+    {{-- HEADER SELAMAT DATANG --}}
+    <div class="welcome-card">
+        <div class="welcome-title">
+            📖 Raport Tahfidz
+        </div>
+        <div class="welcome-desc">
+            Kelola nilai hafalan Al-Qur'an, catat perkembangan, dan cetak raport siswa dengan mudah.
         </div>
     </div>
 
-    <div class="page-body">
-
-        {{-- ===== QUICK ACTIONS ===== --}}
-        <div class="actions-bar">
-            <a href="{{ route('guru.raport-tahfidz-siswa.create') }}" class="action-chip">👤 Pilih Siswa</a>
-            <a href="{{ route('guru.raport-aspeks.index') }}" class="action-chip">📋 Aspek</a>
-            <a href="{{ route('guru.raport-nilai.index') }}" class="action-chip">✏️ Nilai Aspek</a>
-            <a href="{{ route('guru.raport-hafalan.index') }}" class="action-chip">📝 Hafalan</a>
-            <a href="{{ route('guru.raport-ujian.create') }}" class="action-chip">🎓 Ujian</a>
+    {{-- BANNER PANDUAN MENGISI (LANGKAH-LANGKAH) --}}
+    <div class="guide-banner">
+        <div class="guide-title">
+            📌 Panduan Mengisi Raport Tahfidz
         </div>
-
-        @if($siswas->isEmpty())
-
-        {{-- ===== EMPTY STATE ===== --}}
-        <div class="empty-state">
-            <div class="empty-icon-wrap">📂</div>
-            <div class="empty-title">Belum Ada Siswa</div>
-            <div class="empty-desc">
-                Silakan pilih siswa terlebih dahulu<br>untuk mulai mengelola raport tahfidz.
+        <div class="guide-steps">
+            <div class="step-item">
+                <span class="step-number">1</span>
+                <span class="step-text"><strong>Pilih Siswa</strong> — klik tombol di bawah untuk memilih siswa yang akan diisi raportnya.</span>
             </div>
-            <a href="{{ route('guru.raport-tahfidz-siswa.create') }}" class="btn-empty-cta">
+            <div class="step-item">
+                <span class="step-number">2</span>
+                <span class="step-text"><strong>Input Nilai Aspek</strong> — beri nilai untuk setiap aspek penilaian.</span>
+            </div>
+            <div class="step-item">
+                <span class="step-number">3</span>
+                <span class="step-text"><strong>Catatan Hafalan</strong> — rekam surah & ayat terakhir dan target hafalan.</span>
+            </div>
+            <div class="step-item">
+                <span class="step-number">4</span>
+                <span class="step-text"><strong>Data Ujian</strong> — input nilai ujian tahfidz siswa.</span>
+            </div>
+        </div>
+    </div>
+
+    {{-- TOMBOL AKSI UTAMA DENGAN NOMOR URUT --}}
+    <div class="action-buttons-grid">
+        <!-- Tombol Pilih Siswa (langkah 1, tanpa nomor badge karena paling awal) -->
+        <a href="{{ route('guru.raport-tahfidz-siswa.create') }}" class="action-btn">
+            <div class="action-emoji">👤</div>
+            <div class="action-info">
+                <h4>Pilih Siswa <span class="step-badge">1</span></h4>
+                <p>Mulai isi raport</p>
+            </div>
+        </a>
+
+        <!-- Input Nilai Aspek (langkah 2) -->
+        <a href="{{ route('guru.raport-nilai.index') }}" class="action-btn">
+            <div class="action-emoji">✏️</div>
+            <div class="action-info">
+                <h4>Input Nilai Aspek <span class="step-badge">2</span></h4>
+                <p>Beri nilai tiap aspek</p>
+            </div>
+        </a>
+
+        <!-- Catatan Hafalan (langkah 3) -->
+        <a href="{{ route('guru.raport-hafalan.index') }}" class="action-btn">
+            <div class="action-emoji">📝</div>
+            <div class="action-info">
+                <h4>Catatan Hafalan <span class="step-badge">3</span></h4>
+                <p>Rekam progres hafalan</p>
+            </div>
+        </a>
+
+        <!-- Data Ujian (langkah 4) -->
+        <a href="{{ route('guru.raport-ujian.create') }}" class="action-btn">
+            <div class="action-emoji">🎓</div>
+            <div class="action-info">
+                <h4>Data Ujian <span class="step-badge">4</span></h4>
+                <p>Input hasil ujian</p>
+            </div>
+        </a>
+
+        
+        <!-- Tombol Aspek Penilaian (opsional, tidak wajib diisi setiap saat) -->
+        <a href="{{ route('guru.raport-aspeks.index') }}" class="action-btn">
+            <div class="action-emoji">📋</div>
+            <div class="action-info">
+                <h4>Aspek Penilaian</h4>
+                <p>Atur kriteria nilai</p>
+            </div>
+        </a>
+    </div>
+
+    @if ($siswas->isEmpty())
+        <div class="empty-card">
+            <div class="empty-illustration">📂</div>
+            <div class="empty-title">Belum Ada Data Siswa</div>
+            <div class="empty-desc">
+                Klik tombol di bawah untuk memilih siswa dan mulai mengelola raport tahfidz.
+            </div>
+            <a href="{{ route('guru.raport-tahfidz-siswa.create') }}" class="btn-pilih-siswa">
                 👤 Pilih Siswa Sekarang
             </a>
         </div>
+    @else
 
-        @else
 
-        {{-- ===== STATS ===== --}}
-        <div class="stat-row">
-            <div class="stat-card">
-                <div class="stat-icon si-blue">👤</div>
-                <div>
-                    <div class="stat-num sn-blue">{{ $siswas->count() }}</div>
-                    <div class="stat-lbl">Total Siswa</div>
+        {{-- Tabel Siswa --}}
+        <div class="table-section">
+            <div class="section-header">
+                <div class="section-title">
+                    👨‍🎓 Daftar Siswa
+                    <span class="total-badge">{{ $siswas->count() }} orang</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon si-green">📋</div>
-                <div>
-                    <div class="stat-num sn-green">{{ $aspeks->count() }}</div>
-                    <div class="stat-lbl">Aspek Penilaian</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon si-amber">📝</div>
-                <div>
-                    <div class="stat-num sn-amber">{{ collect($hafalan)->count() }}</div>
-                    <div class="stat-lbl">Data Hafalan</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon si-purple">🎓</div>
-                <div>
-                    <div class="stat-num sn-purple">{{ collect($ujian)->count() }}</div>
-                    <div class="stat-lbl">Data Ujian</div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ===== SECTION BAR ===== --}}
-        <div class="section-bar">
-            <div class="section-title" style="margin:0;">📋 Daftar Siswa</div>
-            <span class="count-badge">{{ $siswas->count() }} siswa</span>
-        </div>
-
-        {{-- ===== MOBILE: CARD LIST ===== --}}
-        <div class="mobile-only siswa-list-mobile">
-            @foreach($siswas as $i => $siswa)
-            @php
-            $aspekDinilai = collect($nilai[$siswa->id] ?? [])->filter(fn($v) => $v > 0)->count();
-            $totalAspek = $aspeks->count();
-            $hafalanSiswa = $hafalan[$siswa->id] ?? null;
-            $ujianSiswa = $ujian[$siswa->id] ?? collect();
-            $selesai = $totalAspek > 0 && $aspekDinilai == $totalAspek;
-            $pct = $totalAspek > 0 ? round(($aspekDinilai / $totalAspek) * 100) : 0;
-            $initial = mb_strtoupper(mb_substr($siswa->nama_siswa, 0, 1));
-            @endphp
-
-            <div class="siswa-card-mobile">
-
-                <div class="card-name-bar">
-                    <div class="card-avatar">{{ $initial }}</div>
-                    <div>
-                        <div class="card-num">{{ $i + 1 }}. Siswa</div>
-                        <div class="card-name">{{ $siswa->nama_siswa }}</div>
-                        <div class="card-meta">
-                            NIS {{ $siswa->nis ?? '-' }} · {{ $siswa->rombel->tingkat ?? '-' }} – {{ $siswa->rombel->nama_rombel ?? '-' }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="card-row">
-                        <span class="card-row-label">Hafalan</span>
-                        @if($hafalanSiswa)
-                        <span class="hafalan-pill">📖 {{ $hafalanSiswa->surah_terakhir }} : {{ $hafalanSiswa->ayat_terakhir }}</span>
-                        @else
-                        <span class="hafalan-empty">Belum ada data</span>
-                        @endif
-                    </div>
-
-                    @if($ujianSiswa->count() > 0)
-                    <div class="card-row">
-                        <span class="card-row-label">Ujian</span>
-                        <span class="ujian-pill">🎓 {{ $ujianSiswa->count() }}× ujian</span>
-                    </div>
-                    @endif
-
-                    <div class="card-row">
-                        <span class="card-row-label">Aspek</span>
-                        @if($totalAspek > 0)
-                        <div class="aspek-wrap">
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar-fill {{ $selesai ? 'pb-done' : 'pb-partial' }}"
-                                    data-pct="{{ $pct }}"></div>
-                            </div>
-                            <span class="aspek-chip {{ $selesai ? 'ac-done' : ($aspekDinilai > 0 ? 'ac-partial' : 'ac-none') }}">
-                                {{ $aspekDinilai }}/{{ $totalAspek }}
-                            </span>
-                        </div>
-                        @else
-                        <span class="aspek-chip ac-none">—</span>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="card-actions">
-                    <a href="{{ route('guru.raport-tahfidz.show', $siswa->id) }}" class="btn-sm btn-detail">👁 Detail</a>
-                    <a href="{{ route('guru.raport-tahfidz.cetak', $siswa->id) }}" class="btn-sm btn-print">🖨 Cetak</a>
-                </div>
-
-            </div>
-            @endforeach
-        </div>
-
-        {{-- ===== DESKTOP: TABLE ===== --}}
-        <div class="desktop-only table-card">
-            <div class="table-header">
-                <div class="table-header-title">📋 Daftar Siswa Tahfidz</div>
-            </div>
-            <div style="overflow-x:auto;">
-                <table>
+            <div class="table-responsive">
+                <table class="siswa-table">
                     <thead>
                         <tr>
-                            <th style="width:52px;">#</th>
+                            <th>No</th>
                             <th>Siswa</th>
                             <th>Hafalan Terakhir</th>
-                            <th class="center" style="width:130px;">Aspek</th>
-                            <th class="right" style="width:180px;">Aksi</th>
+                            <th>Nilai Aspek</th>
+                            <th>Ujian</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($siswas as $i => $siswa)
-                        @php
-                        $aspekDinilai = collect($nilai[$siswa->id] ?? [])->filter(fn($v) => $v > 0)->count();
-                        $totalAspek = $aspeks->count();
-                        $hafalanSiswa = $hafalan[$siswa->id] ?? null;
-                        $ujianSiswa = $ujian[$siswa->id] ?? collect();
-                        $selesai = $totalAspek > 0 && $aspekDinilai == $totalAspek;
-                        $pct = $totalAspek > 0 ? round(($aspekDinilai / $totalAspek) * 100) : 0;
-                        $initial = mb_strtoupper(mb_substr($siswa->nama_siswa, 0, 1));
-                        @endphp
-                        <tr>
-                            <td><span class="td-num">{{ $i + 1 }}</span></td>
-
-                            <td>
-                                <div class="student-cell">
-                                    <div class="tbl-avatar">{{ $initial }}</div>
-                                    <div>
-                                        <div class="student-name">{{ $siswa->nama_siswa }}</div>
-                                        <div class="student-meta">
-                                            NIS {{ $siswa->nis ?? '-' }} &nbsp;·&nbsp;
-                                            {{ $siswa->rombel->tingkat ?? '-' }} – {{ $siswa->rombel->nama_rombel ?? '-' }}
+                        @foreach ($siswas as $i => $siswa)
+                            @php
+                                $aspekDinilai = collect($nilai[$siswa->id] ?? [])->filter(fn($v) => $v > 0)->count();
+                                $totalAspek = $aspeks->count();
+                                $hafalanSiswa = $hafalan[$siswa->id] ?? null;
+                                $ujianSiswa = $ujian[$siswa->id] ?? collect();
+                                $inisial = mb_strtoupper(mb_substr($siswa->nama_siswa, 0, 1));
+                                $kelas = $siswa->rombel->tingkat_romawi ?? '';
+                                $rombel = $siswa->rombel->nama_rombel ?? '';
+                            @endphp
+                            <tr>
+                                <td>{{ $i + 1 }}</td>
+                                <td>
+                                    <div class="profil-siswa">
+                                        <div class="avatar-siswa">{{ $inisial }}</div>
+                                        <div class="info-siswa">
+                                            <div class="nama">{{ $siswa->nama_siswa }}</div>
+                                            <div class="detail">NIS: {{ $siswa->nis ?? '-' }} · Kelas: {{ $kelas }} {{ $rombel }}</div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                @if($hafalanSiswa)
-                                <div class="hafalan-pill" style="display:inline-flex; margin-bottom:4px;">
-                                    📖 {{ $hafalanSiswa->surah_terakhir }} : {{ $hafalanSiswa->ayat_terakhir }}
-                                </div>
-                                @else
-                                <span class="hafalan-empty">Belum ada data</span>
-                                @endif
-                                @if($ujianSiswa->count() > 0)
-                                <div style="margin-top:4px;">
-                                    <span class="ujian-pill">🎓 {{ $ujianSiswa->count() }}× ujian</span>
-                                </div>
-                                @endif
-                            </td>
-
-                            <td class="center">
-                                <div class="aspek-wrap" style="justify-content:center;">
-                                    @if($totalAspek > 0)
-                                    <div class="progress-bar-wrap">
-                                        <div class="progress-bar-fill {{ $selesai ? 'pb-done' : 'pb-partial' }}"
-                                            data-pct="{{ $pct }}"></div>
-                                    </div>
-                                    <span class="aspek-chip {{ $selesai ? 'ac-done' : ($aspekDinilai > 0 ? 'ac-partial' : 'ac-none') }}">
-                                        {{ $aspekDinilai }}/{{ $totalAspek }}
-                                    </span>
+                                </td>
+                                <td>
+                                    @if ($hafalanSiswa)
+                                        <span class="label label-hafalan">
+                                            📖 {{ $hafalanSiswa->surah_terakhir }} : {{ $hafalanSiswa->ayat_terakhir }}
+                                        </span>
                                     @else
-                                    <span class="aspek-chip ac-none">—</span>
+                                        <span class="label label-kosong">Belum ada hafalan</span>
                                     @endif
-                                </div>
-                            </td>
-
-                            <td class="right">
-                                <div class="row-actions">
-                                    <a href="{{ route('guru.raport-tahfidz.show', $siswa->id) }}" class="btn-sm btn-detail">👁 Detail</a>
-                                    <a href="{{ route('guru.raport-tahfidz.cetak', $siswa->id) }}" class="btn-sm btn-print">🖨 Cetak</a>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <span class="label label-nilai">
+                                        ⭐ {{ $aspekDinilai }} dari {{ $totalAspek }}
+                                    </span>
+                                </td>
+                                <td>
+                                    @if ($ujianSiswa->count() > 0)
+                                        <span class="label label-ujian">
+                                            🎓 {{ $ujianSiswa->count() }} kali ujian
+                                        </span>
+                                    @else
+                                        <span class="label label-kosong">Belum ada ujian</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="tombol-group">
+                                        <a href="{{ route('guru.raport-tahfidz.show', $siswa->id) }}" class="tombol tombol-detail">
+                                            👁 Detail
+                                        </a>
+                                        <a href="{{ route('guru.raport_tahfidz.download_pdf', $siswa->id) }}" target="_blank" class="tombol tombol-cetak">
+                                            🖨️ Cetak Raport
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
 
-        @endif
-
-    </div>
+        <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: var(--gray-400);">
+            💡 Tips: Isi hafalan dan nilai aspek terlebih dahulu sebelum mencetak raport
+        </div>
+    @endif
 </div>
-
-<script>
-    document.querySelectorAll('.progress-bar-fill[data-pct]').forEach(el => {
-        el.style.width = el.dataset.pct + '%';
-    });
-</script>
 
 @endsection

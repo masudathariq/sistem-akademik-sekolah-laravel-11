@@ -134,7 +134,7 @@
             <div>
                 <span class="text-gray-600">Terakhir diubah:</span>
                 <span class="font-medium text-gray-800 ml-2">
-                    {{ $setting->updated_at->format('d F Y') }}
+                    {{ $setting->updated_at->translatedFormat('d F Y') }}
                 </span>
             </div>
             <div>

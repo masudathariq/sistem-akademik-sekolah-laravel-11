@@ -101,7 +101,7 @@
     <h2>Rekap Absensi Siswa</h2>
     <div class="info">
         <strong>Rombel:</strong> {{ $rombel->nama_lengkap ?? '-' }} |
-        <strong>Tingkat:</strong> {{ $rombel->tingkat ?? '-' }} |
+        <strong>Tingkat:</strong> {{ $rombel->tingkat_romawi ?? '-' }} |
         <strong>Jumlah Siswa:</strong> {{ $rekap->count() }} |
         <strong>Bulan:</strong> {{ \Carbon\Carbon::parse($bulan.'-01')->isoFormat('MMMM YYYY') }}
     </div>

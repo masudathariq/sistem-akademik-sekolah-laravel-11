@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tatausaha\Rombel;
 use App\Models\Tatausaha\TahunAjaran;
-use App\Models\Tatausaha\Alumni;
 use Illuminate\Support\Facades\DB;
 
 
@@ -19,34 +18,47 @@ class RombelController extends Controller
     {
         $tahunAjaranAktif = TahunAjaran::where('is_active', true)->first();
 
-        if (!$tahunAjaranAktif) {
-            return redirect('/staff_tu')
-                ->with('error', 'Belum ada tahun ajaran aktif');
-        }
+        $rombels = collect();
 
-        $rombels = Rombel::with('tahunAjaran')
-            ->where('tahun_ajaran_id', $tahunAjaranAktif->id)
-            ->orderBy('tingkat')
-            ->orderBy('kode_rombel')
-            ->get();
+        if ($tahunAjaranAktif) {
+            $rombels = Rombel::with('tahunAjaran')
+                ->where('tahun_ajaran_id', $tahunAjaranAktif->id)
+                ->orderBy('tingkat')
+                ->orderBy('kode_rombel')
+                ->get();
+        }
 
         return view('staff_tu.rombel.index', compact('rombels', 'tahunAjaranAktif'));
     }
 
     /**
-     * Form tambah rombel
+     * Halaman Data Wali Kelas
      */
-    public function create()
+    public function waliKelas()
     {
         $tahunAjaranAktif = TahunAjaran::where('is_active', true)->first();
+        $rombels = collect();
 
-        if (!$tahunAjaranAktif) {
-            return redirect('/staff_tu')
-                ->with('error', 'Belum ada tahun ajaran aktif');
+        if ($tahunAjaranAktif) {
+            $rombels = Rombel::with('walikelas')
+                ->where('tahun_ajaran_id', $tahunAjaranAktif->id)
+                ->orderBy('tingkat')
+                ->orderBy('kode_rombel')
+                ->get();
         }
 
-        return view('staff_tu.rombel.create', compact('tahunAjaranAktif'));
+        return view('staff_tu.rombel.wali_kelas', compact('rombels', 'tahunAjaranAktif'));
     }
+
+    /**
+     * Form tambah rombel
+     */
+public function create()
+{
+    $tahunAjaranAktif = TahunAjaran::where('is_active', true)->first();
+
+    return view('staff_tu.rombel.create', compact('tahunAjaranAktif'));
+}
 
     /**
      * Simpan rombel baru
@@ -66,7 +78,7 @@ class RombelController extends Controller
         }
 
         // cegah rombel dobel (VII A di TA yang sama)
-        $exists = Rombel::where('tahun_ajaran_id', $tahunAjaranAktif->id)
+        $exists = Rombel::where('tahun_ajaran_id', $tahunAjaranAktif?->id)
             ->where('tingkat', $request->tingkat)
             ->where('kode_rombel', strtoupper($request->kode_rombel))
             ->exists();
@@ -78,7 +90,7 @@ class RombelController extends Controller
         }
 
         Rombel::create([
-            'tahun_ajaran_id' => $tahunAjaranAktif->id,
+            'tahun_ajaran_id' => $tahunAjaranAktif?->id,
             'tingkat'         => $request->tingkat,
             'kode_rombel'     => strtoupper($request->kode_rombel),
             'nama_rombel'     => $request->nama_rombel,
@@ -104,10 +116,10 @@ class RombelController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-    'tingkat'     => 'required|in:7,8,9',
-    'kode_rombel' => 'required|string|max:5',
-    'nama_rombel' => 'required|string|max:100',
-]);
+            'tingkat'     => 'required|in:7,8,9',
+            'kode_rombel' => 'required|string|max:5',
+            'nama_rombel' => 'required|string|max:100',
+        ]);
 
 
         $rombel = Rombel::findOrFail($id);
@@ -116,7 +128,7 @@ class RombelController extends Controller
         $exists = Rombel::where('tahun_ajaran_id', $rombel->tahun_ajaran_id)
             ->where('tingkat', $request->tingkat)
             ->where('kode_rombel', strtoupper($request->kode_rombel))
-            ->where('id', '!=', $rombel->id)
+            ->where('id', '!=', $rombel?->id)
             ->exists();
 
         if ($exists) {
@@ -146,7 +158,7 @@ class RombelController extends Controller
         return back()->with('success', 'Rombel berhasil dihapus');
     }
 
-public function lulusSemua($rombelId)
+    public function lulusSemua($rombelId)
     {
         $rombel = Rombel::findOrFail($rombelId);
 
@@ -180,7 +192,4 @@ public function lulusSemua($rombelId)
 
         return back()->with('success', 'Semua siswa berhasil dimasukkan ke alumni.');
     }
-
-
-
 }

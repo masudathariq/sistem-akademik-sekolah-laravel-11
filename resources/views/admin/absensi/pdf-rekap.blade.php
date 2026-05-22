@@ -3,79 +3,190 @@
 <head>
     <meta charset="utf-8">
     <title>Rekap Absensi Guru</title>
+
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 10px;
-            color: #111827;
-            padding: 30px;
-            line-height: 1.5;
+        * {
+            box-sizing: border-box;
         }
 
-        /* Header */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #1f2937;
+            margin: 0;
+            padding: 28px;
+            line-height: 1.5;
+            background: #ffffff;
+        }
+
+        /* ================= HEADER ================= */
+
         .header {
-            text-align: center;
+            width: 100%;
             margin-bottom: 18px;
         }
 
-        .header h1 {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .header .subtitle {
+        .header-table td {
+            vertical-align: top;
+        }
+
+        .logo {
+            width: 70px;
+        }
+
+        .logo img {
+            width: 62px;
+        }
+
+        .school-info {
+            text-align: center;
+        }
+
+        .school-info h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .school-info h2 {
+            margin: 2px 0;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .school-info p {
+            margin: 1px 0;
             font-size: 10px;
             color: #4b5563;
         }
 
-        hr.divider {
+        .divider {
             border: none;
-            border-top: 2px solid #1f2937;
-            margin: 14px 0 18px;
+            border-top: 2px solid #111827;
+            margin-top: 14px;
+            margin-bottom: 20px;
         }
 
-        /* Identitas */
-        .identity {
+        /* ================= TITLE ================= */
+
+        .title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .title h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+        }
+
+        .title p {
+            margin-top: 5px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        /* ================= INFO ================= */
+
+        .info-box {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+        }
+
+        .info-table {
             width: 100%;
-            margin-bottom: 14px;
+            border-collapse: collapse;
         }
 
-        .identity td {
-            padding: 4px 6px;
-            font-size: 9px;
+        .info-table td {
+            padding: 4px 0;
+            font-size: 10px;
         }
 
-        .identity .label {
+        .info-label {
             width: 18%;
-            color: #374151;
+            color: #6b7280;
             font-weight: 600;
         }
 
-        .identity .value {
+        .info-value {
             width: 32%;
+            font-weight: 600;
             color: #111827;
         }
 
-        /* Table */
+        /* ================= SUMMARY ================= */
+
+        .summary-wrapper {
+            width: 100%;
+            margin-bottom: 18px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px 0;
+        }
+
+        .summary-card {
+            border: 1px solid #dbe3ea;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #f9fafb;
+        }
+
+        .summary-card .label {
+            font-size: 10px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .summary-card .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        /* ================= TABLE ================= */
+
         table.absensi {
             width: 100%;
             border-collapse: collapse;
-            font-size: 9px;
+            font-size: 10px;
         }
 
-        table.absensi th {
+        table.absensi thead th {
+            background: #1f2937;
+            color: white;
+            padding: 9px 6px;
             border: 1px solid #374151;
-            padding: 6px 5px;
-            background: #f3f4f6;
             font-weight: 700;
             text-align: center;
         }
 
-        table.absensi td {
+        table.absensi tbody td {
             border: 1px solid #d1d5db;
-            padding: 5px 5px;
+            padding: 7px 6px;
+            vertical-align: middle;
+        }
+
+        table.absensi tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        table.absensi td.center {
             text-align: center;
         }
 
@@ -83,148 +194,258 @@
             text-align: left;
         }
 
-        /* Status */
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 8px;
-            font-weight: 700;
-        }
+        /* ================= STATUS ================= */
 
-        .hadir { background: #dcfce7; color: #166534; }
-        .izin { background: #fef9c3; color: #854d0e; }
-        .sakit { background: #fee2e2; color: #991b1b; }
-        .alpha { background: #e5e7eb; color: #374151; }
-
-        /* Ringkasan */
-        .summary {
-            margin-top: 14px;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .summary td {
-            border: 1px solid #d1d5db;
-            padding: 6px;
-            text-align: center;
+        .status {
+            padding: 3px 8px;
+            border-radius: 20px;
             font-size: 9px;
+            font-weight: bold;
+            display: inline-block;
         }
 
-        .summary .label {
-            background: #f9fafb;
-            font-weight: 600;
+        .hadir {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .izin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .sakit {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alpha {
+            background: #e5e7eb;
             color: #374151;
         }
 
-        .summary .value {
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 18px;
-            font-size: 8px;
-            color: #6b7280;
-            text-align: right;
-        }
+        /* ================= EMPTY ================= */
 
         .empty {
-            padding: 12px;
             text-align: center;
-            font-style: italic;
+            padding: 18px !important;
             color: #6b7280;
+            font-style: italic;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            margin-top: 28px;
+            border-top: 1px solid #d1d5db;
+            padding-top: 10px;
+            font-size: 9px;
+            color: #6b7280;
+        }
+
+        .footer-table {
+            width: 100%;
+        }
+
+        .footer-left {
+            text-align: left;
+        }
+
+        .footer-right {
+            text-align: right;
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Header -->
+    {{-- HEADER --}}
     <div class="header">
-        <h1>REKAP ABSENSI GURU</h1>
-        <div class="subtitle">
-            Periode {{ \Carbon\Carbon::createFromDate(null, $bulan, 1)->locale('id')->isoFormat('MMMM YYYY') }}
-        </div>
+    {{-- KOP SURAT --}}
+    <div style="
+        width: 100%;
+        margin-bottom: 24px;
+    ">
+        <img src="{{ public_path('images/kop.jpg') }}"
+             style="
+                width: 100%;
+                height: auto;
+             ">
     </div>
 
-    <hr class="divider">
+    </div>
 
-    <!-- Identitas Guru -->
-    <table class="identity">
-        <tr>
-            <td class="label">Nama Guru</td>
-            <td class="value">: {{ $guru->nama }}</td>
-            <td class="label">NUPTK</td>
-            <td class="value">: {{ $guru->nuptk ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td class="label">NBM</td>
-            <td class="value">: {{ $guru->nbm ?? '-' }}</td>
-            <td class="label">Jenis Kelamin</td>
-            <td class="value">
-                : {{ $guru->jenis_kelamin === 'L' ? 'Laki-laki' : ($guru->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}
-            </td>
-        </tr>
-    </table>
+    {{-- TITLE --}}
+    <div class="title">
 
-    <!-- Tabel Absensi -->
+        <h3>Rekapitulasi Absensi Guru</h3>
+
+        <p>
+            Periode
+            {{ \Carbon\Carbon::createFromDate(null, $bulan, 1)->locale('id')->isoFormat('MMMM YYYY') }}
+        </p>
+
+    </div>
+
+    {{-- IDENTITAS --}}
+    <div class="info-box">
+
+        <table class="info-table">
+
+            <tr>
+                <td class="info-label">Nama Guru</td>
+                <td class="info-value">: {{ $guru->nama }}</td>
+
+                <td class="info-label">NUPTK</td>
+                <td class="info-value">: {{ $guru->nuptk ?? '-' }}</td>
+            </tr>
+
+            <tr>
+                <td class="info-label">NBM</td>
+                <td class="info-value">: {{ $guru->nbm ?? '-' }}</td>
+
+                <td class="info-label">Jenis Kelamin</td>
+                <td class="info-value">
+                    :
+                    {{ $guru->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+    {{-- SUMMARY --}}
+    <div class="summary-wrapper">
+
+        <table class="summary-table">
+            <tr>
+
+                <td>
+                    <div class="summary-card">
+                        <div class="label">Hadir</div>
+                        <div class="value">{{ $hadir }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-card">
+                        <div class="label">Izin</div>
+                        <div class="value">{{ $izin }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-card">
+                        <div class="label">Sakit</div>
+                        <div class="value">{{ $sakit }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-card">
+                        <div class="label">Total Hari</div>
+                        <div class="value">{{ $jumlahHari }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="summary-card">
+                        <div class="label">Kehadiran</div>
+                        <div class="value">{{ $persenHadir }}%</div>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+
+    {{-- TABLE --}}
     <table class="absensi">
+
         <thead>
             <tr>
-                <th width="4%">No</th>
-                <th width="12%">Tanggal</th>
-                <th width="12%">Hari</th>
-                <th width="12%">Masuk</th>
-                <th width="12%">Pulang</th>
+                <th width="5%">No</th>
+                <th width="13%">Tanggal</th>
+                <th width="14%">Hari</th>
+                <th width="12%">Jam Masuk</th>
+                <th width="12%">Jam Pulang</th>
                 <th width="12%">Status</th>
-                <th>Lokasi</th>
+                <th>Lokasi Presensi</th>
             </tr>
         </thead>
+
         <tbody>
+
             @forelse($absensi as $i => $a)
+
                 <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($a->tanggal)->format('d-m-Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('dddd') }}</td>
-                    <td>{{ $a->jam_masuk ?? '-' }}</td>
-                    <td>{{ $a->jam_pulang ?? '-' }}</td>
-                    <td>
-                        <span class="badge {{ strtolower($a->status) }}">
+
+                    <td class="center">
+                        {{ $i + 1 }}
+                    </td>
+
+                    <td class="center">
+                        {{ \Carbon\Carbon::parse($a->tanggal)->translatedFormat('d M Y') }}
+                    </td>
+
+                    <td class="center">
+                        {{ \Carbon\Carbon::parse($a->tanggal)->locale('id')->isoFormat('dddd') }}
+                    </td>
+
+                    <td class="center">
+                        {{ $a->jam_masuk ?? '-' }}
+                    </td>
+
+                    <td class="center">
+                        {{ $a->jam_pulang ?? '-' }}
+                    </td>
+
+                    <td class="center">
+                        <span class="status {{ strtolower($a->status) }}">
                             {{ strtoupper($a->status) }}
                         </span>
                     </td>
-                    <td class="left">{{ $a->lokasi ?? '-' }}</td>
+
+                    <td class="left">
+                        {{ $a->lokasi ?? '-' }}
+                    </td>
+
                 </tr>
+
             @empty
+
                 <tr>
-                    <td colspan="7" class="empty">Tidak ada data absensi</td>
+                    <td colspan="7" class="empty">
+                        Tidak terdapat data absensi pada periode ini.
+                    </td>
                 </tr>
+
             @endforelse
+
         </tbody>
+
     </table>
 
-    <!-- Ringkasan -->
-    <table class="summary">
-        <tr>
-            <td class="label">Hadir</td>
-            <td class="label">Izin</td>
-            <td class="label">Sakit</td>
-            <td class="label">Total Hari</td>
-            <td class="label">Kehadiran</td>
-        </tr>
-        <tr>
-            <td class="value">{{ $hadir }}</td>
-            <td class="value">{{ $izin }}</td>
-            <td class="value">{{ $sakit }}</td>
-            <td class="value">{{ $jumlahHari }}</td>
-            <td class="value">{{ $persenHadir }}%</td>
-        </tr>
-    </table>
-
-    <!-- Footer -->
+    {{-- FOOTER --}}
     <div class="footer">
-        Dicetak pada {{ \Carbon\Carbon::now()->locale('id')->isoFormat('DD MMMM YYYY HH:mm') }} WIB
+
+        <table class="footer-table">
+            <tr>
+
+                <td class="footer-left">
+                    Dokumen ini dicetak otomatis oleh Sistem Informasi Akademik.
+                </td>
+
+                <td class="footer-right">
+                    Dicetak:
+                    {{ now()->locale('id')->isoFormat('DD MMMM YYYY • HH:mm') }} WIB
+                </td>
+
+            </tr>
+        </table>
+
     </div>
 
 </body>

@@ -213,8 +213,62 @@
     });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+    function togglePassword() {
+        const input = document.getElementById("password");
+        input.type = input.type === "password" ? "text" : "password";
+    }
 
+    window.addEventListener("load", function () {
+        setTimeout(() => {
+            document.getElementById("page-loader").classList.add("hide");
+        }, 1800);
+    });
+</script>
+
+@if ($errors->any())
+<script>
+    Swal.fire({
+        icon: 'warning',
+
+        title: 'Autentikasi Ditolak',
+
+        html: `
+            <div style="font-size:14px; color:#64748b;">
+                Email atau password yang Anda masukkan tidak sesuai.
+            </div>
+        `,
+
+        background: '#ffffff',
+
+        color: '#0f172a',
+
+        confirmButtonText: 'Coba Lagi',
+
+        confirmButtonColor: '#2563eb',
+
+        width: 420,
+
+        padding: '1.5rem',
+
+        customClass: {
+            popup: 'rounded-3xl shadow-2xl',
+            title: 'text-xl font-bold',
+            confirmButton: 'rounded-xl px-5 py-2'
+        },
+
+        showClass: {
+            popup: 'animate__animated animate__zoomIn'
+        },
+
+        hideClass: {
+            popup: 'animate__animated animate__zoomOut'
+        }
+    });
+</script>
+@endif
 </body>
 
 

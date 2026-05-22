@@ -3,305 +3,1151 @@
 @section('title', 'Rekap Gaji Bulanan')
 
 @section('content')
+
 @php
     $namaBulan = \Carbon\Carbon::create(null, $bulan, 1)->translatedFormat('F');
 @endphp
 
-<div class="container mx-auto p-6">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
-    {{-- HEADER --}}
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">
-            Rekap Gaji Bulanan
-        </h1>
-        <p class="text-sm text-gray-500 mt-1">
-            Lihat dan kelola rekap gaji guru per bulan. Cetak atau kirim slip gaji langsung ke guru.
-        </p>
-    </div>
+*{
+    box-sizing:border-box;
+    font-family:'IBM Plex Sans',sans-serif;
+}
 
-    {{-- SUCCESS ALERT --}}
-    @if (session('success'))
-        <div class="mb-6 flex items-start gap-3 bg-emerald-50 border-l-4 border-emerald-500 px-4 py-3 rounded-lg shadow-sm">
-            <svg class="w-6 h-6 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div class="flex-1">
-                <p class="font-semibold text-emerald-800">Berhasil</p>
-                <p class="text-sm text-emerald-700">{{ session('success') }}</p>
-            </div>
-            <button onclick="this.parentElement.remove()" class="text-emerald-700 hover:text-emerald-900">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+:root{
+    --navy:#1e3a8a;
+    --navy-md:#1d4ed8;
+    --navy-lt:#dbeafe;
+
+    --green:#16a34a;
+    --green-lt:#f0fdf4;
+    --green-bd:#86efac;
+
+    --amber:#d97706;
+    --amber-lt:#fffbeb;
+    --amber-bd:#fcd34d;
+
+    --red:#dc2626;
+    --red-lt:#fff1f2;
+    --red-bd:#fecdd3;
+
+    --gray-bg:#f8fafc;
+    --border:#e2e8f0;
+
+    --text:#1e293b;
+    --muted:#64748b;
+    --hint:#94a3b8;
+
+    --radius:12px;
+
+    --shadow:
+        0 1px 3px rgba(0,0,0,.06),
+        0 4px 12px rgba(0,0,0,.04);
+}
+
+body{
+    background:var(--gray-bg);
+}
+
+.rb-page{
+    min-height:100vh;
+    padding:2rem;
+    padding-bottom:4rem;
+    color:var(--text);
+}
+
+/* ─────────────────────────
+   TOP BAR
+───────────────────────── */
+.top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    margin-bottom:1.75rem;
+    flex-wrap:wrap;
+}
+
+.page-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.title-icon{
+    width:44px;
+    height:44px;
+    background:var(--navy-lt);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.title-text h1{
+    font-size:20px;
+    font-weight:600;
+    color:var(--text);
+    margin:0 0 3px;
+    letter-spacing:-.02em;
+}
+
+.title-text p{
+    font-size:13px;
+    color:var(--muted);
+    margin:0;
+}
+
+.title-text p strong{
+    color:var(--navy-md);
+    font-weight:600;
+}
+
+/* ─────────────────────────
+   ALERT
+───────────────────────── */
+.alert{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:1rem;
+    border-radius:10px;
+    margin-bottom:1.5rem;
+}
+
+.alert-success{
+    background:var(--green-lt);
+    border:1px solid var(--green-bd);
+}
+
+.alert-error{
+    background:var(--red-lt);
+    border:1px solid var(--red-bd);
+}
+
+.alert-icon{
+    width:20px;
+    height:20px;
+    flex-shrink:0;
+}
+
+.alert-success .alert-icon{
+    color:var(--green);
+}
+
+.alert-error .alert-icon{
+    color:var(--red);
+}
+
+.alert-content{
+    flex:1;
+}
+
+.alert-title{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:4px;
+}
+
+.alert-success .alert-title{
+    color:var(--green);
+}
+
+.alert-error .alert-title{
+    color:var(--red);
+}
+
+.alert-text{
+    font-size:12px;
+    line-height:1.6;
+}
+
+.alert-success .alert-text{
+    color:#166534;
+}
+
+.alert-error .alert-text{
+    color:#991b1b;
+}
+
+/* ─────────────────────────
+   INFO BANNER
+───────────────────────── */
+.info-banner{
+    background:var(--navy-lt);
+    border:1px solid #bfdbfe;
+    border-radius:12px;
+    padding:1rem 1.25rem;
+    margin-bottom:1.5rem;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.info-banner-icon{
+    width:22px;
+    height:22px;
+    color:var(--navy-md);
+    flex-shrink:0;
+    margin-top:1px;
+}
+
+.info-banner-content{
+    flex:1;
+}
+
+.info-banner-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:6px;
+}
+
+.info-banner-text{
+    font-size:12px;
+    line-height:1.7;
+    color:#1d4ed8;
+}
+
+.info-banner-list{
+    margin-top:10px;
+    display:grid;
+    gap:8px;
+}
+
+.info-item{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    font-size:12px;
+    color:#1d4ed8;
+    line-height:1.6;
+}
+
+.info-dot{
+    width:6px;
+    height:6px;
+    background:var(--navy-md);
+    border-radius:999px;
+    margin-top:7px;
+    flex-shrink:0;
+}
+
+/* ─────────────────────────
+   FILTER CARD
+───────────────────────── */
+.filter-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    margin-bottom:1.5rem;
+}
+
+.filter-header{
+    padding:1rem 1.5rem;
+    border-bottom:1px solid var(--border);
+    background:#fdfdfd;
+}
+
+.filter-header h2{
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:0;
+}
+
+.filter-body{
+    padding:1.5rem;
+}
+
+.filter-form{
+    display:flex;
+    align-items:end;
+    gap:1rem;
+    flex-wrap:wrap;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:180px;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.form-input,
+.form-select{
+    width:100%;
+    padding:10px 14px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-size:14px;
+    background:white;
+    transition:all .15s ease;
+}
+
+.form-input:focus,
+.form-select:focus{
+    outline:none;
+    border-color:var(--navy-md);
+    box-shadow:0 0 0 3px rgba(29,78,216,.1);
+}
+
+/* ─────────────────────────
+   BUTTONS
+───────────────────────── */
+.action-group{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.btn-primary,
+.btn-outline,
+.btn-success,
+.btn-emerald{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    border:none;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+.btn-outline{
+    background:#fff;
+    color:var(--navy-md);
+    border:1px solid #bfdbfe;
+}
+
+.btn-outline:hover{
+    background:var(--navy-lt);
+    color:var(--navy);
+}
+
+.btn-primary{
+    background:var(--navy-md);
+}
+
+.btn-primary:hover{
+    background:var(--navy);
+}
+
+.btn-success{
+    background:var(--green);
+}
+
+.btn-success:hover{
+    background:#15803d;
+}
+
+.btn-emerald{
+    background:#059669;
+}
+
+.btn-emerald:hover{
+    background:#047857;
+}
+
+/* ─────────────────────────
+   STATS
+───────────────────────── */
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:1rem;
+    margin-bottom:1.5rem;
+}
+
+.stat-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:1rem 1.25rem;
+    box-shadow:var(--shadow);
+}
+
+.stat-label{
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:10px;
+    font-weight:600;
+}
+
+.stat-value{
+    font-size:22px;
+    font-weight:700;
+    line-height:1.3;
+}
+
+.stat-blue{ color:var(--navy-md); }
+.stat-green{ color:var(--green); }
+.stat-amber{ color:var(--amber); }
+
+/* ─────────────────────────
+   TABLE
+───────────────────────── */
+.table-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.table-header{
+    padding:1rem 1.5rem;
+    border-bottom:1px solid var(--border);
+    background:#fdfdfd;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+}
+
+.table-header h2{
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:0;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1200px;
+}
+
+thead th{
+    background:#f8fafc;
+    padding:12px 14px;
+    border-bottom:1px solid var(--border);
+    font-size:11px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    white-space:nowrap;
+    text-align:left;
+}
+
+tbody td{
+    padding:14px;
+    border-bottom:1px solid #f1f5f9;
+    vertical-align:middle;
+    font-size:12px;
+    color:var(--text);
+}
+
+tbody tr:last-child td{
+    border-bottom:none;
+}
+
+tbody tr:hover{
+    background:#fafafa;
+}
+
+.tc{
+    text-align:center;
+}
+
+.tr{
+    text-align:right;
+}
+
+/* ─────────────────────────
+   GURU CELL
+───────────────────────── */
+.guru-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--navy-md);
+    text-decoration:none;
+    font-weight:600;
+}
+
+.guru-link:hover{
+    color:var(--navy);
+}
+
+.guru-avatar{
+    width:32px;
+    height:32px;
+    border-radius:999px;
+    background:var(--navy-lt);
+    color:var(--navy-md);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:700;
+    flex-shrink:0;
+}
+
+/* ─────────────────────────
+   BADGE
+───────────────────────── */
+.badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px 8px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.badge-green{
+    background:var(--green-lt);
+    color:var(--green);
+}
+
+.badge-red{
+    background:var(--red-lt);
+    color:var(--red);
+}
+
+.badge-blue{
+    background:var(--navy-lt);
+    color:var(--navy-md);
+}
+
+.total-text{
+    font-size:13px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.empty{
+    text-align:center;
+    padding:3rem 1rem !important;
+    color:var(--hint);
+    font-size:13px;
+}
+
+/* ─────────────────────────
+   RESPONSIVE
+───────────────────────── */
+@media (max-width:768px){
+
+    .rb-page{
+        padding:1rem;
+    }
+
+    .filter-form{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .form-group{
+        min-width:100%;
+    }
+
+    .action-group{
+        width:100%;
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .btn-primary,
+    .btn-outline,
+    .btn-success,
+    .btn-emerald{
+        justify-content:center;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+</style>
+
+<div class="rb-page">
+
+    {{-- ═════════ TOP BAR ═════════ --}}
+    <div class="top-bar">
+
+        <div class="page-title">
+
+            <div class="title-icon">
+
+                <svg width="22"
+                     height="22"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="#1d4ed8"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M12 1v22"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"/>
+
                 </svg>
-            </button>
-        </div>
-    @endif
 
-    {{-- ERROR ALERT --}}
-    @if (session('error'))
-        <div class="mb-6 flex items-start gap-3 bg-red-50 border-l-4 border-red-500 px-4 py-3 rounded-lg shadow-sm">
-            <svg class="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div class="flex-1">
-                <p class="font-semibold text-red-800">Gagal</p>
-                <p class="text-sm text-red-700">{{ session('error') }}</p>
             </div>
-            <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-900">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    @endif
 
-    {{-- INFO BANNER --}}
-    <div class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
-        <div class="flex items-start gap-3">
-            <svg class="w-6 h-6 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div class="flex-1">
-                <h3 class="font-semibold text-blue-800 mb-1">Tentang Rekap Gaji</h3>
-                <p class="text-sm text-blue-700">
-                    Rekap gaji menampilkan total perhitungan gaji setiap guru berdasarkan gaji pokok, tunjangan, pengurangan, dan transport kehadiran. Klik nama guru untuk melihat detail slip gaji.
+            <div class="title-text">
+
+                <h1>Rekap Gaji Bulanan</h1>
+
+                <p>
+                    Kelola rekap gaji guru
+                    &mdash;
+                    <strong>{{ $namaBulan }} {{ $tahun }}</strong>
                 </p>
+
             </div>
+
         </div>
+
     </div>
 
-    {{-- FILTER & ACTION BUTTONS --}}
-    <div class="mb-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-        <div class="flex items-center gap-3 mb-4">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+    {{-- SUCCESS --}}
+    @if(session('success'))
+
+    <div class="alert alert-success">
+
+        <div class="alert-icon">
+
+            <svg width="20"
+                 height="20"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+
+                <path d="M20 6 9 17l-5-5"/>
+
             </svg>
-            <h3 class="font-semibold text-gray-700">Filter Periode & Aksi</h3>
+
         </div>
 
-        <div class="flex flex-wrap gap-3 items-end">
-            {{-- FORM FILTER --}}
-            <form method="GET" class="flex gap-3 items-end">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
-                    <select name="bulan" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        @for ($i = 1; $i <= 12; $i++)
-                            <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create(null, $i, 1)->translatedFormat('F') }}
-                            </option>
-                        @endfor
-                    </select>
-                </div>
+        <div class="alert-content">
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
-                    <select name="tahun" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        @for ($y = now()->year - 2; $y <= now()->year + 1; $y++)
-                            <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
-                        @endfor
-                    </select>
-                </div>
+            <div class="alert-title">
+                Berhasil
+            </div>
 
-                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    Tampilkan
-                </button>
-            </form>
+            <div class="alert-text">
+                {{ session('success') }}
+            </div>
 
-            {{-- CETAK SEMUA --}}
-            <a href="{{ route('bendahara.rekap-gaji.cetak-semua', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
-                target="_blank"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                </svg>
-                Cetak Semua Slip
-            </a>
-
-            {{-- KIRIM SLIP --}}
-            <form method="POST"
-                action="{{ route('bendahara.rekap-gaji.kirim-slip') }}"
-                onsubmit="return confirm('Kirim slip gaji periode {{ $namaBulan }} {{ $tahun }} ke semua guru?')">
-                @csrf
-                <input type="hidden" name="bulan" value="{{ $bulan }}">
-                <input type="hidden" name="tahun" value="{{ $tahun }}">
-                <button type="submit"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
-                    Kirim Slip Gaji
-                </button>
-            </form>
         </div>
+
     </div>
 
-    {{-- STATISTICS CARDS --}}
+    @endif
+
+    {{-- ERROR --}}
+    @if(session('error'))
+
+    <div class="alert alert-error">
+
+        <div class="alert-icon">
+
+            <svg width="20"
+                 height="20"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+
+            </svg>
+
+        </div>
+
+        <div class="alert-content">
+
+            <div class="alert-title">
+                Gagal
+            </div>
+
+            <div class="alert-text">
+                {{ session('error') }}
+            </div>
+
+        </div>
+
+    </div>
+
+    @endif
+
+    {{-- ═════════ INFO BANNER ═════════ --}}
+    <div class="info-banner">
+
+        <div class="info-banner-icon">
+
+            <svg width="22"
+                 height="22"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+
+            </svg>
+
+        </div>
+
+        <div class="info-banner-content">
+
+            <div class="info-banner-title">
+                Informasi Rekap Gaji Guru
+            </div>
+
+            <div class="info-banner-text">
+                Halaman ini digunakan untuk melihat total perhitungan gaji seluruh guru berdasarkan periode bulan tertentu.
+                Sistem akan menghitung total gaji dari kombinasi gaji pokok, tunjangan tambahan, transport kehadiran,
+                bonus tahfidz, serta pengurangan atau potongan gaji.
+            </div>
+
+            <div class="info-banner-list">
+
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <div>
+                        Klik <strong>nama guru</strong> untuk melihat detail slip gaji lengkap.
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <div>
+                        Tombol <strong>Cetak Semua Slip</strong> digunakan untuk mencetak seluruh slip gaji guru dalam satu periode.
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <div>
+                        Tombol <strong>Kirim Slip Gaji</strong> digunakan untuk mengirim slip gaji otomatis ke seluruh guru.
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <div>
+                        Total gaji akhir dihitung dari:
+                        <strong>
+                            Gaji Pokok + Tunjangan + Transport + Tahfidz - Potongan
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <div>
+                        Gunakan filter bulan dan tahun untuk melihat data rekap periode sebelumnya atau berikutnya.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- ═════════ FILTER ═════════ --}}
+    <div class="filter-card">
+
+        <div class="filter-header">
+            <h2>📅 Filter Periode & Aksi</h2>
+        </div>
+
+        <div class="filter-body">
+
+            <form method="GET"
+                  class="filter-form">
+
+                <div class="form-group">
+
+                    <label>Bulan</label>
+
+                    <select name="bulan"
+                            class="form-select">
+
+                        @for ($i = 1; $i <= 12; $i++)
+
+                            <option value="{{ $i }}"
+                                {{ $bulan == $i ? 'selected' : '' }}>
+
+                                {{ \Carbon\Carbon::create(null, $i, 1)->translatedFormat('F') }}
+
+                            </option>
+
+                        @endfor
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Tahun</label>
+
+                    <select name="tahun"
+                            class="form-select">
+
+                        @for ($y = now()->year - 2; $y <= now()->year + 1; $y++)
+
+                            <option value="{{ $y }}"
+                                {{ $tahun == $y ? 'selected' : '' }}>
+
+                                {{ $y }}
+
+                            </option>
+
+                        @endfor
+
+                    </select>
+
+                </div>
+
+                <div class="action-group">
+
+                    <button type="submit"
+                            class="btn-primary">
+
+                        <svg width="14"
+                             height="14"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+
+                        </svg>
+
+                        Tampilkan
+
+                    </button>
+
+                    <a href="{{ route('bendahara.rekap-gaji.cetak-rekap-pdf', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                       target="_blank"
+                       rel="noopener"
+                       class="btn-outline">
+
+                        <svg width="14"
+                             height="14"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6"/>
+                            <path d="M16 13H8"/>
+                            <path d="M16 17H8"/>
+                            <path d="M10 9H8"/>
+
+                        </svg>
+
+                        Cetak PDF Rekap Gaji
+
+                    </a>
+
+                    <a href="{{ route('bendahara.rekap-gaji.cetak-semua', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                       target="_blank"
+                       class="btn-success">
+
+                        <svg width="14"
+                             height="14"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+
+                            <path d="M6 9V2h12v7"/>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                            <rect x="6" y="14" width="12" height="8"/>
+
+                        </svg>
+
+                        Cetak Semua Slip
+
+                    </a>
+
+                    <form method="POST"
+                          action="{{ route('bendahara.rekap-gaji.kirim-slip') }}"
+                          onsubmit="return confirm('Kirim slip gaji periode {{ $namaBulan }} {{ $tahun }} ke semua guru?')">
+
+                        @csrf
+
+                        <input type="hidden"
+                               name="bulan"
+                               value="{{ $bulan }}">
+
+                        <input type="hidden"
+                               name="tahun"
+                               value="{{ $tahun }}">
+
+                        <button type="submit"
+                                class="btn-emerald">
+
+                            <svg width="14"
+                                 height="14"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <path d="m22 2-7 20-4-9-9-4Z"/>
+                                <path d="M22 2 11 13"/>
+
+                            </svg>
+
+                            Kirim Slip Gaji
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {{-- ═════════ STATS ═════════ --}}
     @if(count($rekap) > 0)
+
     @php
         $totalGajiPokok = collect($rekap)->sum('gaji_pokok');
         $totalDibayar = collect($rekap)->sum('total');
     @endphp
-    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-blue-100 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Total Guru</p>
-                    <p class="text-xl font-bold text-gray-800">{{ count($rekap) }}</p>
-                </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-label">Total Guru</div>
+            <div class="stat-value stat-blue">
+                {{ count($rekap) }}
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-purple-100 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Periode</p>
-                    <p class="text-lg font-bold text-gray-800">{{ $namaBulan }} {{ $tahun }}</p>
-                </div>
+        <div class="stat-card">
+            <div class="stat-label">Periode</div>
+            <div class="stat-value stat-blue">
+                {{ $namaBulan }} {{ $tahun }}
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-green-100 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Total Gaji Pokok</p>
-                    <p class="text-lg font-bold text-gray-800">Rp {{ number_format($totalGajiPokok, 0, ',', '.') }}</p>
-                </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Gaji Pokok</div>
+            <div class="stat-value stat-green">
+                Rp {{ number_format($totalGajiPokok,0,',','.') }}
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-yellow-100 rounded-lg">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Total Dibayar</p>
-                    <p class="text-lg font-bold text-gray-800">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</p>
-                </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Dibayar</div>
+            <div class="stat-value stat-amber">
+                Rp {{ number_format($totalDibayar,0,',','.') }}
             </div>
         </div>
+
     </div>
+
     @endif
 
-{{-- TABEL --}}
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full text-xs"> {{-- font tabel lebih kecil --}}
-            <thead class="bg-gradient-to-r from-gray-50 to-gray-100 text-[11px]">
-                <tr>
-                    <th class="px-3 py-2 text-center font-semibold text-gray-700">No</th>
-                    <th class="px-3 py-2 text-left font-semibold text-gray-700">
-                        <div class="flex items-center gap-1">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            Guru
-                        </div>
-                    </th>
-                    <th class="px-3 py-2 text-right font-semibold text-gray-700">Mengajar</th>
-                    <th class="px-3 py-2 text-right font-semibold text-gray-700">Tunjangan</th>
-                    <th class="px-3 py-2 text-right font-semibold text-gray-700">Potongan</th>
-                    <th class="px-3 py-2 text-center font-semibold text-gray-700">Hadir</th>
-                    <th class="px-3 py-2 text-right font-semibold text-gray-700">Transport</th>
-                    <th class="px-3 py-2 text-right font-semibold text-gray-700">Tahfidz</th>
-                    <th class="px-3 py-2 text-right font-semibold text-gray-700">Total</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 text-[11px]">
-                @forelse ($rekap as $i => $item)
-                <tr class="hover:bg-blue-50 transition-colors text-[11px]">
-                    <td class="px-3 py-2 text-center text-gray-600">{{ $i + 1 }}</td>
-                    <td class="px-3 py-2">
-                        <a href="{{ route('bendahara.rekap-gaji.show', [
-                                'guru' => $item['guru']->id,
-                                'bulan' => $bulan,
-                                'tahun' => $tahun
-                            ]) }}"
-                            class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-[11px]">
-                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                <span class="text-blue-600 font-semibold text-[10px]">
-                                    {{ substr($item['guru']->nama, 0, 1) }}
-                                </span>
-                            </div>
-                            {{ $item['guru']->nama }}
-                        </a>
-                    </td>
-                    <td class="px-3 py-2 text-right font-semibold text-gray-800">
-                        Rp {{ number_format($item['gaji_pokok'], 0, ',', '.') }}
-                    </td>
-                    <td class="px-3 py-2 text-right">
-                        <span class="inline-flex items-center px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-semibold">
-                            +Rp {{ number_format($item['penambahan'], 0, ',', '.') }}
-                        </span>
-                    </td>
-                    <td class="px-3 py-2 text-right">
-                        <span class="inline-flex items-center px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-semibold">
-                            -Rp {{ number_format($item['pengurangan'], 0, ',', '.') }}
-                        </span>
-                    </td>
-                    <td class="px-3 py-2 text-center">
-                        <span class="inline-flex items-center px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold">
-                            {{ $item['hadir_final'] }} hari
-                        </span>
-                    </td>
-                    <td class="px-3 py-2 text-right">
-                        <span class="inline-flex items-center px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-semibold">
-                            +Rp {{ number_format($item['transport'], 0, ',', '.') }}
-                        </span>
-                    </td>
-                                        <td class="px-3 py-2 text-right">
-                        <span class="inline-flex items-center px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-semibold">
-                            +Rp {{ number_format($item['tahfidz'], 0, ',', '.') }}
-                        </span>
-                    </td>
-                    <td class="px-3 py-2 text-right">
-                        <span class="text-sm font-bold text-gray-800 text-[11px]">
-                            Rp {{ number_format($item['total'], 0, ',', '.') }}
-                        </span>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="8" class="px-3 py-8 text-center">
-                        <div class="flex flex-col items-center gap-2 text-[11px]">
-                            <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <div>
-                                <p class="text-gray-500 font-medium">Data tidak tersedia</p>
-                                <p class="text-gray-400 mt-1">Pilih bulan dan tahun untuk melihat rekap gaji</p>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    {{-- ═════════ TABLE ═════════ --}}
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h2>💰 Rekap Gaji Guru</h2>
+
+            <span>
+                {{ count($rekap) }} data guru
+            </span>
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th class="tc">No</th>
+                        <th>Guru</th>
+                        <th class="tr">Mengajar</th>
+                        <th class="tr">Tunjangan</th>
+                        <th class="tr">Potongan</th>
+                        <th class="tc">Hadir</th>
+                        <th class="tr">Transport</th>
+                        <th class="tr">Tahfidz</th>
+                        <th class="tr">Total</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse ($rekap as $i => $item)
+
+                    <tr>
+
+                        <td class="tc">
+                            {{ $i + 1 }}
+                        </td>
+
+                        <td>
+
+                            <a href="{{ route('bendahara.rekap-gaji.show', [
+                                    'guru' => $item['guru']->id,
+                                    'bulan' => $bulan,
+                                    'tahun' => $tahun
+                                ]) }}"
+                               class="guru-link">
+
+                                <div class="guru-avatar">
+
+                                    {{ substr($item['guru']->nama,0,1) }}
+
+                                </div>
+
+                                {{ $item['guru']->nama }}
+
+                            </a>
+
+                        </td>
+
+                        <td class="tr">
+                            Rp {{ number_format($item['gaji_pokok'],0,',','.') }}
+                        </td>
+
+                        <td class="tr">
+
+                            <span class="badge badge-green">
+
+                                +Rp {{ number_format($item['penambahan'],0,',','.') }}
+
+                            </span>
+
+                        </td>
+
+                        <td class="tr">
+
+                            <span class="badge badge-red">
+
+                                -Rp {{ number_format($item['pengurangan'],0,',','.') }}
+
+                            </span>
+
+                        </td>
+
+                        <td class="tc">
+
+                            <span class="badge badge-blue">
+
+                                {{ $item['hadir_final'] }} hari
+
+                            </span>
+
+                        </td>
+
+                        <td class="tr">
+
+                            <span class="badge badge-green">
+
+                                +Rp {{ number_format($item['transport'],0,',','.') }}
+
+                            </span>
+
+                        </td>
+
+                        <td class="tr">
+
+                            <span class="badge badge-green">
+
+                                +Rp {{ number_format($item['tahfidz'],0,',','.') }}
+
+                            </span>
+
+                        </td>
+
+                        <td class="tr">
+
+                            <span class="total-text">
+
+                                Rp {{ number_format($item['total'],0,',','.') }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+
+                        <td colspan="9"
+                            class="empty">
+
+                            Belum ada data rekap gaji untuk periode ini.
+
+                        </td>
+
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
-</div>
-
 
 </div>
+
 @endsection

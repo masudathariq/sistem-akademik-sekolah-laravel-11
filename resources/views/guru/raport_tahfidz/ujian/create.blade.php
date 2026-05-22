@@ -1,543 +1,550 @@
 @extends('layouts.guru')
 
-@section('title', 'Input Nilai Ujian')
+@section('title', 'Input Nilai Ujian | Raport Tahfidz')
 
 @section('content')
 
+{{-- Font Modern --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
 <style>
-:root {
-    --ink:          #0D1117;
-    --ink-soft:     #3D4A5C;
-    --ink-muted:    #6B7A8E;
-    --ink-faint:    #A8B3BF;
-    --surface:      #FFFFFF;
-    --surface-alt:  #F6F8FA;
-    --border:       #E1E6EC;
-    --border-soft:  #EDF0F4;
-    --accent:       #1A56DB;
-    --accent-tint:  #EBF1FF;
-    --emerald:      #047857;
-    --emerald-tint: #D1FAE5;
-    --rose:         #BE123C;
-    --rose-tint:    #FFE4E6;
-    --shadow-sm:    0 1px 4px rgba(0,0,0,0.06);
-    --shadow-md:    0 4px 16px rgba(0,0,0,0.08);
-    --r-sm: 6px;
-    --r-md: 10px;
-    --r-lg: 14px;
-}
+    :root {
+        --primary: #0d9488;
+        --primary-dark: #0f766e;
+        --primary-light: #ccfbf1;
+        --primary-bg: #f0fdfa;
+        --secondary: #6366f1;
+        --success: #059669;
+        --success-light: #d1fae5;
+        --warning: #d97706;
+        --warning-light: #fef3c7;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --radius-lg: 1rem;
+        --radius-md: 0.75rem;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-.rt-wrap {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--surface-alt);
-    min-height: 100vh;
-    padding: 28px 32px 48px;
-    color: var(--ink);
-}
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--gray-50);
+        color: var(--gray-800);
+    }
 
-/* ═══════════════════════════
-   PAGE HEADER
-═══════════════════════════ */
-.rt-page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    gap: 16px;
-}
+    .page-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
 
-.rt-breadcrumb {
-    font-size: 12px;
-    color: var(--ink-muted);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-lg);
+        padding: 1.75rem 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
 
-.rt-breadcrumb-sep { color: var(--ink-faint); }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -10%;
+        width: 280px;
+        height: 280px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
 
-.rt-page-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.3px;
-    margin-bottom: 3px;
-}
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
 
-.rt-page-sub {
-    font-size: 13px;
-    color: var(--ink-muted);
-}
+    .hero-text h1 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
 
-.rt-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-    padding-top: 4px;
-}
+    .hero-text p {
+        color: rgba(255,255,255,0.85);
+        font-size: 0.875rem;
+        max-width: 550px;
+        line-height: 1.5;
+    }
 
-/* ═══════════════════════════
-   BUTTONS
-═══════════════════════════ */
-.rt-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: var(--r-sm);
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.14s ease;
-    white-space: nowrap;
-    font-family: inherit;
-}
+    .hero-badge {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+        padding: 0.6rem 1.25rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: white;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
 
-.rt-btn-primary {
-    background: var(--emerald);
-    color: white;
-    border-color: var(--emerald);
-}
-.rt-btn-primary:hover { background: #036644; }
+    /* Alert */
+    .alert {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
 
-.rt-btn-ghost {
-    background: var(--surface);
-    color: var(--ink-soft);
-    border-color: var(--border);
-    text-decoration: none;
-}
-.rt-btn-ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-}
+    .alert-success {
+        background: var(--success-light);
+        color: var(--success);
+        border-left: 4px solid var(--success);
+    }
 
-/* ═══════════════════════════
-   FORM CARD
-═══════════════════════════ */
-.rt-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-    margin-bottom: 16px;
-}
+    /* Card Form */
+    .card {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
 
-.rt-card-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border-soft);
-    background: var(--surface-alt);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        background: white;
+    }
 
-.rt-card-header-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--r-sm);
-    background: var(--emerald-tint);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    flex-shrink: 0;
-}
+    .card-header h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.25rem;
+    }
 
-.rt-card-header-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
-}
+    .card-header p {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
 
-.rt-card-header-sub {
-    font-size: 12px;
-    color: var(--ink-muted);
-    margin-top: 1px;
-}
+    .card-body {
+        padding: 1.5rem;
+    }
 
-.rt-card-body {
-    padding: 20px;
-}
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
 
-/* ═══════════════════════════
-   FORM ELEMENTS
-═══════════════════════════ */
-.rt-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 7px;
-}
+    .form-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray-500);
+        margin-bottom: 0.5rem;
+    }
 
-.rt-input {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    font-size: 13px;
-    font-family: inherit;
-    color: var(--ink);
-    background: var(--surface);
-    transition: all 0.14s;
-    outline: none;
-}
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        font-family: 'Inter', sans-serif;
+    }
 
-.rt-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
-}
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+    }
 
-.rt-input::placeholder { color: var(--ink-faint); }
+    .error-text {
+        font-size: 0.7rem;
+        color: var(--danger);
+        margin-top: 0.375rem;
+    }
 
-.rt-error {
-    font-size: 12px;
-    color: var(--rose);
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
+    /* Tabel Siswa */
+    .table-wrapper {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+    }
 
-/* ═══════════════════════════
-   ALERT
-═══════════════════════════ */
-.rt-alert-success {
-    background: var(--emerald-tint);
-    border: 1px solid #a7f3d0;
-    color: var(--emerald);
-    border-radius: var(--r-md);
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+    .table-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background: white;
+    }
 
-/* ═══════════════════════════
-   STUDENT TABLE
-═══════════════════════════ */
-.rt-table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 20px;
-}
+    .table-title {
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: var(--gray-700);
+    }
 
-.rt-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+    .table-count {
+        font-size: 0.7rem;
+        background: var(--gray-100);
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        color: var(--gray-600);
+    }
 
-.rt-table thead tr {
-    background: var(--surface-alt);
-    border-bottom: 1px solid var(--border);
-}
+    .table-responsive {
+        overflow-x: auto;
+    }
 
-.rt-table th {
-    padding: 10px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    text-align: left;
-    white-space: nowrap;
-}
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
 
-.rt-table th.right { text-align: right; }
-.rt-table th.center { text-align: center; }
+    .data-table th {
+        text-align: left;
+        padding: 0.875rem 1.5rem;
+        background: var(--gray-50);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray-500);
+        border-bottom: 1px solid var(--gray-200);
+    }
 
-.rt-table tbody tr {
-    border-bottom: 1px solid var(--border-soft);
-    transition: background 0.12s;
-    animation: fadeRow 0.3s ease both;
-}
+    .data-table td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        font-size: 0.875rem;
+        vertical-align: middle;
+    }
 
-.rt-table tbody tr:last-child { border-bottom: none; }
-.rt-table tbody tr:hover { background: var(--surface-alt); }
+    .data-table tr:last-child td {
+        border-bottom: none;
+    }
 
-.rt-table tbody tr:nth-child(1)   { animation-delay: 0.03s; }
-.rt-table tbody tr:nth-child(2)   { animation-delay: 0.06s; }
-.rt-table tbody tr:nth-child(3)   { animation-delay: 0.09s; }
-.rt-table tbody tr:nth-child(4)   { animation-delay: 0.12s; }
-.rt-table tbody tr:nth-child(5)   { animation-delay: 0.15s; }
-.rt-table tbody tr:nth-child(n+6) { animation-delay: 0.17s; }
+    .data-table tr:hover td {
+        background: var(--gray-50);
+    }
 
-@keyframes fadeRow {
-    from { opacity: 0; transform: translateY(5px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
+    /* Student Cell */
+    .student-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
 
-.rt-table td {
-    padding: 12px 16px;
-    font-size: 13px;
-    vertical-align: middle;
-}
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: white;
+        flex-shrink: 0;
+    }
 
-.rt-table td.right  { text-align: right; }
-.rt-table td.center { text-align: center; }
+    .student-name {
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.125rem;
+    }
 
-/* Row number */
-.rt-num {
-    width: 26px;
-    height: 26px;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--ink-muted);
-}
+    .student-meta {
+        font-size: 0.7rem;
+        color: var(--gray-500);
+    }
 
-/* Avatar */
-.rt-avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--r-sm);
-    background: var(--accent-tint);
-    border: 1px solid #bfdbfe;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--accent);
-    flex-shrink: 0;
-}
+    /* Input Nilai */
+    .nilai-input {
+        width: 100px;
+        padding: 0.6rem 0.5rem;
+        text-align: center;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
 
-.rt-student-cell {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-}
+    .nilai-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+    }
 
-.rt-student-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 1px;
-}
+    /* Warna dinamis berdasarkan nilai (opsional) */
+    .nilai-input[data-status="high"] {
+        border-color: var(--success);
+        color: var(--success);
+    }
+    .nilai-input[data-status="medium"] {
+        border-color: var(--warning);
+        color: var(--warning);
+    }
+    .nilai-input[data-status="low"] {
+        border-color: var(--danger);
+        color: var(--danger);
+    }
 
-.rt-student-meta {
-    font-size: 11px;
-    color: var(--ink-muted);
-}
+    /* Tombol Aksi */
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
 
-/* Nilai input in table */
-.rt-nilai-input {
-    width: 90px;
-    padding: 7px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    font-size: 14px;
-    font-weight: 700;
-    font-family: inherit;
-    color: var(--ink);
-    text-align: center;
-    background: var(--surface);
-    transition: all 0.14s;
-    outline: none;
-}
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.5rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-sm);
+    }
 
-.rt-nilai-input:focus {
-    border-color: var(--emerald);
-    box-shadow: 0 0 0 3px rgba(4,120,87,0.1);
-}
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
 
-.rt-nilai-input::placeholder {
-    color: var(--ink-faint);
-    font-weight: 400;
-}
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.5rem;
+        background: white;
+        color: var(--gray-700);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
 
-/* Score badge shown when filled */
-.rt-score-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-left: 6px;
-    vertical-align: middle;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
+    .btn-secondary:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-400);
+    }
 
-.si-good { background: var(--emerald-tint); color: var(--emerald); }
-.si-mid  { background: #FEF3C7;              color: #B45309; }
-.si-low  { background: var(--rose-tint);     color: var(--rose); }
-
-/* ═══════════════════════════
-   FORM FOOTER
-═══════════════════════════ */
-.rt-form-footer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 1rem;
+        }
+        .hero-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .hero-text h1 {
+            font-size: 1.5rem;
+        }
+        .table-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .form-footer {
+            justify-content: stretch;
+        }
+        .btn-primary, .btn-secondary {
+            flex: 1;
+            justify-content: center;
+        }
+    }
 </style>
 
-<div class="rt-wrap">
+<div class="page-container">
 
-    {{-- ===== PAGE HEADER ===== --}}
-    <div class="rt-page-header">
-        <div>
-            <div class="rt-breadcrumb">
-                <span>Guru</span>
-                <span class="rt-breadcrumb-sep">›</span>
-                <a href="{{ route('guru.raport-tahfidz.index') }}" style="color:var(--ink-muted);text-decoration:none;">Raport Tahfidz</a>
-                <span class="rt-breadcrumb-sep">›</span>
-                <span>Input Nilai Ujian</span>
+    {{-- Hero --}}
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>📝 Input Nilai Ujian</h1>
+                <p>Isi nilai ujian tahfidz untuk setiap siswa. Nilai akan tersimpan dan terintegrasi ke dalam raport.</p>
             </div>
-            <div class="rt-page-title">Input Nilai Ujian</div>
-            <div class="rt-page-sub">Isi nilai masing-masing siswa (1 – 100)</div>
-        </div>
-        <div class="rt-header-actions">
-            <a href="{{ route('guru.raport-tahfidz.index') }}" class="rt-btn rt-btn-ghost">
-                ← Kembali
-            </a>
+            <div class="hero-badge">
+                👨‍🎓 {{ $siswas->count() }} Siswa
+            </div>
         </div>
     </div>
 
-    {{-- ===== ALERT ===== --}}
+    {{-- Alert Sukses --}}
     @if(session('success'))
-    <div class="rt-alert-success">
-        ✅ {{ session('success') }}
+    <div class="alert alert-success">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 6L9 17l-5-5"/>
+        </svg>
+        {{ session('success') }}
     </div>
     @endif
 
     <form action="{{ route('guru.raport-ujian.store') }}" method="POST">
         @csrf
 
-        {{-- ===== NAMA UJIAN CARD ===== --}}
-        <div class="rt-card">
-            <div class="rt-card-header">
-                <div class="rt-card-header-icon">📝</div>
-                <div>
-                    <div class="rt-card-header-title">Nama Ujian</div>
-                    <div class="rt-card-header-sub">Identifikasi ujian yang akan dinilai</div>
+        {{-- Form Nama Ujian --}}
+        <div class="card">
+            <div class="card-header">
+                <h3>📋 Informasi Ujian</h3>
+                <p>Masukkan nama ujian yang akan dinilai (misal: UTS Tahfidz, UAS Genap, dll).</p>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">Nama Ujian <span class="text-danger">*</span></label>
+                    <input type="text" name="nama_ujian" class="form-input"
+                           value="{{ old('nama_ujian', $nama_ujian_terakhir ?? '') }}"
+                           placeholder="Contoh: Ujian Akhir Semester Gasal">
+                    @error('nama_ujian')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
-            <div class="rt-card-body">
-                <label class="rt-label">Nama Ujian</label>
-                <input type="text"
-                       name="nama_ujian"
-                       class="rt-input"
-                       value="{{ old('nama_ujian', $nama_ujian_terakhir ?? '') }}"
-                       placeholder="Contoh: Ujian Akhir Semester">
-                @error('nama_ujian')
-                <div class="rt-error">⚠ {{ $message }}</div>
-                @enderror
+        </div>
+
+        {{-- Tabel Nilai Siswa --}}
+        <div class="table-wrapper">
+            <div class="table-header">
+                <div class="table-title">🎯 Daftar Nilai Siswa</div>
+                <div class="table-count">{{ $siswas->count() }} Siswa</div>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">No</th>
+                            <th>Siswa</th>
+                            <th style="text-align: center; width: 180px;">Nilai (1-100)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($siswas as $index => $siswa)
+                            @php
+                                $namaUjian = old('nama_ujian', $nama_ujian_terakhir ?? '');
+                                $nilaiLama = $nilai_ujian[$namaUjian][$siswa->id]->nilai_ujian ?? '';
+                                $inisial = strtoupper(substr($siswa->nama_siswa, 0, 1));
+                                $kelas = ($siswa->rombel->tingkat_romawi ?? '') . ' ' . ($siswa->rombel->nama_rombel ?? '');
+                                $kelas = trim($kelas) ?: '-';
+                            @endphp
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="avatar">{{ $inisial }}</div>
+                                        <div>
+                                            <div class="student-name">{{ $siswa->nama_siswa }}</div>
+                                            <div class="student-meta">
+                                                NIS: {{ $siswa->nis ?? '-' }} · Kelas: {{ $kelas }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="siswa_id[]" value="{{ $siswa->id }}">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" name="nilai_ujian[]" min="0" max="100"
+                                           class="nilai-input" placeholder="0"
+                                           value="{{ old('nilai_ujian.'.$index, $nilaiLama) }}">
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        {{-- ===== STUDENT TABLE ===== --}}
-        <div class="rt-table-wrap">
-            <table class="rt-table">
-                <thead>
-                    <tr>
-                        <th style="width:48px;">#</th>
-                        <th>Siswa</th>
-                        <th class="center" style="width:160px;">Nilai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($siswas as $index => $siswa)
-                    @php
-                        $nama_ujian_input = old('nama_ujian', $nama_ujian_terakhir ?? '');
-                        $nilai_lama = $nilai_ujian[$nama_ujian_input][$siswa->id]->nilai_ujian ?? '';
-                        $initial = mb_strtoupper(mb_substr($siswa->nama_siswa, 0, 1));
-                    @endphp
-                    <tr>
-                        <td><span class="rt-num">{{ $index + 1 }}</span></td>
-
-                        <td>
-                            <div class="rt-student-cell">
-                                <div class="rt-avatar">{{ $initial }}</div>
-                                <div>
-                                    <div class="rt-student-name">{{ $siswa->nama_siswa }}</div>
-                                    @if($siswa->nis || isset($siswa->rombel))
-                                    <div class="rt-student-meta">
-                                        @if($siswa->nis) NIS {{ $siswa->nis }} @endif
-                                        @if(isset($siswa->rombel)) &nbsp;·&nbsp; {{ $siswa->rombel->tingkat ?? '' }} – {{ $siswa->rombel->nama_rombel ?? '' }} @endif
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                            <input type="hidden" name="siswa_id[]" value="{{ $siswa->id }}">
-                        </td>
-
-                        <td class="center">
-                            <input type="number"
-                                   name="nilai_ujian[]"
-                                   min="1" max="100"
-                                   class="rt-nilai-input"
-                                   placeholder="—"
-                                   data-index="{{ $index }}"
-                                   value="{{ old('nilai_ujian.'.$index, $nilai_lama) }}">
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        {{-- ===== FOOTER ===== --}}
-        <div class="rt-form-footer">
-            <button type="submit" class="rt-btn rt-btn-primary">
-                💾 Simpan Nilai
-            </button>
-            <a href="{{ route('guru.raport-tahfidz.index') }}" class="rt-btn rt-btn-ghost">
-                Batal
+        {{-- Tombol Aksi --}}
+        <div class="form-footer">
+            <a href="{{ route('guru.raport-tahfidz.index') }}" class="btn-secondary">
+                ← Kembali ke Dashboard
             </a>
+            <button type="submit" class="btn-primary">
+                💾 Simpan Semua Nilai
+            </button>
         </div>
-
     </form>
-
 </div>
 
+{{-- Script untuk memberikan feedback visual pada input nilai --}}
 <script>
-// Highlight input color based on value
-document.querySelectorAll('.rt-nilai-input').forEach(input => {
-    const update = () => {
-        const v = parseInt(input.value);
-        if (!input.value || isNaN(v)) {
-            input.style.borderColor = '';
-            input.style.color = '';
-            return;
+    document.querySelectorAll('.nilai-input').forEach(input => {
+        function updateColor() {
+            let val = parseInt(input.value);
+            if (isNaN(val) || input.value === '') {
+                input.style.borderColor = '#d1d5db';
+                input.style.color = '#374151';
+                return;
+            }
+            if (val >= 85) {
+                input.style.borderColor = '#059669';
+                input.style.color = '#059669';
+            } else if (val >= 70) {
+                input.style.borderColor = '#d97706';
+                input.style.color = '#b45309';
+            } else {
+                input.style.borderColor = '#dc2626';
+                input.style.color = '#dc2626';
+            }
         }
-        if (v >= 80) {
-            input.style.borderColor = 'var(--emerald)';
-            input.style.color = 'var(--emerald)';
-        } else if (v >= 60) {
-            input.style.borderColor = '#D97706';
-            input.style.color = '#B45309';
-        } else {
-            input.style.borderColor = 'var(--rose)';
-            input.style.color = 'var(--rose)';
-        }
-    };
-    input.addEventListener('input', update);
-    update(); // apply on load if value exists
-});
+        input.addEventListener('input', updateColor);
+        updateColor();
+    });
 </script>
 
 @endsection

@@ -15,6 +15,12 @@ use App\Http\Controllers\Guru\RaportTahfidzHafalanController;
 use App\Http\Controllers\Guru\RaportTahfidzUjianController;
 use App\Http\Controllers\Guru\RaportTahfidzSiswaController;
 use App\Http\Controllers\Guru\RaportTahfidzController;
+use App\Http\Controllers\Guru\RaportIqroAspekController;
+use App\Http\Controllers\Guru\RaportIqroNilaiController;
+use App\Http\Controllers\Guru\RaportIqroBacaanController;
+use App\Http\Controllers\Guru\RaportIqroUjianController;
+use App\Http\Controllers\Guru\RaportIqroSiswaController;
+use App\Http\Controllers\Guru\RaportIqroController;
 
 
 /*
@@ -135,12 +141,33 @@ Route::get('raport-tahfidz/{siswa_id}/download-pdf', [RaportTahfidzController::c
 
         // Hafalan
         Route::get('raport-hafalan', [\App\Http\Controllers\Guru\RaportTahfidzHafalanController::class, 'index'])->name('raport-hafalan.index');
+        Route::get('raport-hafalan/cetak-pdf', [\App\Http\Controllers\Guru\RaportTahfidzHafalanController::class, 'cetakPdf'])->name('raport-hafalan.cetak-pdf');
         Route::get('raport-hafalan/create', [\App\Http\Controllers\Guru\RaportTahfidzHafalanController::class, 'create'])->name('raport-hafalan.create');
         Route::post('raport-hafalan/store', [\App\Http\Controllers\Guru\RaportTahfidzHafalanController::class, 'store'])->name('raport-hafalan.store');
 
         // Nilai Ujian
         Route::get('raport-ujian/create', [\App\Http\Controllers\Guru\RaportTahfidzUjianController::class, 'create'])->name('raport-ujian.create');
         Route::post('raport-ujian/store', [\App\Http\Controllers\Guru\RaportTahfidzUjianController::class, 'store'])->name('raport-ujian.store');
+
+        // Raport Iqro
+        Route::get('raport-iqro', [RaportIqroController::class, 'index'])->name('raport-iqro.index');
+        Route::get('raport-iqro/{siswa_id}', [RaportIqroController::class, 'show'])->name('raport-iqro.show');
+        Route::get('raport-iqro/{siswa_id}/cetak', [RaportIqroController::class, 'cetakRaport'])->name('raport-iqro.cetak');
+        Route::get('raport-iqro/{siswa_id}/download-pdf', [RaportIqroController::class, 'downloadPdf'])->name('raport_iqro.download_pdf');
+        Route::get('raport-iqro-siswa', [RaportIqroSiswaController::class, 'create'])->name('raport-iqro-siswa.create');
+        Route::post('raport-iqro-siswa/store', [RaportIqroSiswaController::class, 'store'])->name('raport-iqro-siswa.store');
+        Route::resource('raport-iqro-aspeks', RaportIqroAspekController::class);
+        Route::get('raport-iqro-nilai', [RaportIqroNilaiController::class, 'index'])->name('raport-iqro-nilai.index');
+        Route::get('raport-iqro-aspeks/{aspek}/nilai/create', [RaportIqroNilaiController::class, 'create'])->name('raport-iqro-nilai.create');
+        Route::post('raport-iqro-aspeks/{aspek}/nilai/store', [RaportIqroNilaiController::class, 'store'])->name('raport-iqro-nilai.store');
+        Route::get('raport-iqro-aspeks/{aspek}/nilai/edit', [RaportIqroNilaiController::class, 'edit'])->name('raport-iqro-nilai.edit');
+        Route::post('raport-iqro-aspeks/{aspek}/nilai/update', [RaportIqroNilaiController::class, 'update'])->name('raport-iqro-nilai.update');
+        Route::get('raport-iqro-bacaan', [RaportIqroBacaanController::class, 'index'])->name('raport-iqro-bacaan.index');
+        Route::get('raport-iqro-bacaan/cetak-pdf', [RaportIqroBacaanController::class, 'cetakPdf'])->name('raport-iqro-bacaan.cetak-pdf');
+        Route::get('raport-iqro-bacaan/create', [RaportIqroBacaanController::class, 'create'])->name('raport-iqro-bacaan.create');
+        Route::post('raport-iqro-bacaan/store', [RaportIqroBacaanController::class, 'store'])->name('raport-iqro-bacaan.store');
+        Route::get('raport-iqro-ujian/create', [RaportIqroUjianController::class, 'create'])->name('raport-iqro-ujian.create');
+        Route::post('raport-iqro-ujian/store', [RaportIqroUjianController::class, 'store'])->name('raport-iqro-ujian.store');
 
 
         Route::get('/jadwal', 

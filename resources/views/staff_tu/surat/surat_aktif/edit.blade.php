@@ -41,7 +41,7 @@
             @foreach($rombels as $rombel)
                 <option value="{{ $rombel->id }}"
                     {{ $surat->siswa->rombel_id == $rombel->id ? 'selected' : '' }}>
-                    {{ $rombel->tingkat }} - {{ $rombel->nama_rombel }}
+                    {{ $rombel->tingkat_romawi }} - {{ $rombel->nama_rombel }}
                 </option>
             @endforeach
         </select>

@@ -1,118 +1,524 @@
 @extends('layouts.guru')
 
+@section('title', 'Daftar Hafalan Siswa | Raport Tahfidz')
+
 @section('content')
-<div class="bg-white min-h-screen py-8 px-4">
-    <div class="max-w-5xl mx-auto">
 
-        {{-- Header --}}
-        <div class="mb-6">
+{{-- Professional Font --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 
-            {{-- Back Buttons --}}
-            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+<style>
+    /* ----- VARIABLES ----- */
+    :root {
+        --primary: #0d9488;
+        --primary-dark: #0f766e;
+        --primary-light: #ccfbf1;
+        --primary-bg: #f0fdfa;
+        --secondary: #6366f1;
+        --secondary-light: #e0e7ff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+        --radius-lg: 1rem;
+        --radius-md: 0.75rem;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
 
-                {{-- Kembali --}}
-                <a href="{{ route('guru.raport-tahfidz.index') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7 7-7m0 14h11a2 2 0 002-2V7a2 2 0 00-2-2H10" />
-                    </svg>
-                    Kembali
-                </a>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--gray-50);
+        color: var(--gray-800);
+    }
+
+    /* Container Utama */
+    .hafalan-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* ========== HERO SECTION ========== */
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-lg);
+        padding: 2rem 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .hero-text h1 {
+        font-size: 1.875rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: white;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hero-text p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.875rem;
+        line-height: 1.6;
+        max-width: 600px;
+    }
+
+    .hero-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        padding: 0.75rem 1.25rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* ========== ACTION BAR ========== */
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        background: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        background: var(--gray-100);
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+        background: var(--gray-200);
+        color: var(--gray-900);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.25rem;
+        border-radius: var(--radius-md);
+        background: white;
+        border: 1px solid var(--gray-300);
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-400);
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.25rem;
+        border-radius: var(--radius-md);
+        background: var(--primary);
+        border: none;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    /* ========== INFO COUNT ========== */
+    .info-count {
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .count-badge {
+        background: var(--primary-bg);
+        color: var(--primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* ========== TABLE MODERN ========== */
+    .table-wrapper {
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gray-200);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+
+    .data-table thead tr:first-child th {
+        background: var(--gray-50);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--gray-500);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .data-table thead tr:last-child th {
+        background: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .th-orange {
+        background: #fff7ed !important;
+        color: #c2410c !important;
+    }
+
+    .th-indigo {
+        background: #eef2ff !important;
+        color: #4338ca !important;
+    }
+
+    .data-table td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        font-size: 0.875rem;
+        vertical-align: middle;
+    }
+
+    .data-table tbody tr:hover td {
+        background: var(--gray-50);
+    }
+
+    /* Student Info */
+    .student-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .avatar {
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .student-name {
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.125rem;
+    }
+
+    .student-meta {
+        font-size: 0.7rem;
+        color: var(--gray-500);
+    }
+
+    /* Badges */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .badge-orange {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .badge-indigo {
+        background: #eef2ff;
+        color: #4338ca;
+    }
+
+    .empty-value {
+        color: var(--gray-400);
+        font-size: 0.75rem;
+    }
+
+    .orange-cell, .indigo-cell {
+        background-color: transparent;
+    }
+
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gray-200);
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .empty-icon {
+        width: 72px;
+        height: 72px;
+        background: var(--gray-100);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1rem;
+    }
+
+    .empty-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-desc {
+        font-size: 0.875rem;
+        color: var(--gray-500);
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-link {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1024px) {
+        .hafalan-container {
+            padding: 1.5rem;
+        }
+        .hero-text h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hafalan-container {
+            padding: 1rem;
+        }
+        .hero-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .action-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .btn-group {
+            justify-content: flex-end;
+        }
+        .info-count {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<div class="hafalan-container">
+
+    {{-- Hero Section --}}
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>📖 Daftar Hafalan Siswa</h1>
+                <p>Ringkasan hafalan terakhir dan target hafalan lanjutan seluruh siswa. Pantau perkembangan tahfidz secara lebih terstruktur.</p>
             </div>
-
-            <div class="flex items-center justify-between flex-wrap gap-3">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">📋 Daftar Hafalan Siswa</h1>
-                    <p class="text-gray-500 mt-1 text-sm">
-                        Ringkasan hafalan terakhir dan lanjutan seluruh siswa.
-                    </p>
-                </div>
-
-                <a href="{{ route('guru.raport-hafalan.create') }}"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4v16m8-8H4" />
-                    </svg>
-                    Input Hafalan
-                </a>
+            <div class="hero-badge">
+                👨‍🎓 {{ $siswas->count() }} Siswa
             </div>
         </div>
+    </div>
 
+    {{-- Action Bar --}}
+    <div class="action-bar">
+        <a href="{{ route('guru.raport-tahfidz.index') }}" class="btn-back">
+            ← Kembali ke Dashboard
+        </a>
+        <div class="btn-group">
+            <a href="{{ route('guru.raport-hafalan.create') }}" class="btn-primary">
+                ➕ Input Hafalan
+            </a>
+        </div>
+    </div>
+
+    @if($siswas->isEmpty())
         {{-- Empty State --}}
-        @if($siswas->isEmpty())
-        <div class="bg-orange-50 border border-orange-200 rounded-2xl px-5 py-6 flex items-start gap-4">
-            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 text-lg">⚠️</div>
-            <div>
-                <p class="font-semibold text-orange-700 text-sm mb-1">Belum ada siswa yang dipilih</p>
-                <p class="text-orange-600 text-sm">Silakan pilih siswa terlebih dahulu sebelum melihat daftar hafalan.</p>
-                <a href="{{ route('guru.raport-tahfidz-siswa.create') }}"
-                    class="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-indigo-600 hover:text-indigo-800">
-                    Pilih Siswa Sekarang
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">Belum Ada Data Siswa</div>
+            <div class="empty-desc">Silakan pilih siswa terlebih dahulu untuk mulai mencatat hafalan.</div>
+            <a href="{{ route('guru.raport-tahfidz-siswa.create') }}" class="empty-link">
+                Pilih Siswa Sekarang →
+            </a>
+        </div>
+    @else
+        {{-- Info Jumlah --}}
+        <div class="info-count">
+            <span class="count-badge">📋 {{ $siswas->count() }} Siswa Ditampilkan</span>
         </div>
 
-        @else
-
-        {{-- Counter --}}
-        <p class="text-sm text-gray-400 mb-4">Menampilkan <strong class="text-gray-600">{{ $siswas->count() }}</strong> siswa</p>
-
-        {{-- Table --}}
-        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
+        {{-- Tabel Hafalan --}}
+        <div class="table-wrapper">
+            <div class="table-responsive">
+                <table class="data-table">
                     <thead>
-                        <tr class="bg-gray-50 border-b border-gray-100">
-                            <th class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider px-5 py-3 w-12">No</th>
-                            <th class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider px-5 py-3">Nama Siswa</th>
-                            <th colspan="2" class="text-center text-xs font-semibold text-orange-400 uppercase tracking-wider px-5 py-3 bg-orange-50 border-l border-orange-100">
-                                📖 Hafalan Terakhir
-                            </th>
-                            <th colspan="2" class="text-center text-xs font-semibold text-indigo-400 uppercase tracking-wider px-5 py-3 bg-indigo-50 border-l border-indigo-100">
-                                ➡️ Hafalan Lanjutan
-                            </th>
+                        <tr>
+                            <th>No</th>
+                            <th>Siswa</th>
+                            <th colspan="2" class="th-orange">📖 Hafalan Terakhir</th>
+                            <th colspan="2" class="th-indigo">🎯 Hafalan Lanjutan</th>
                         </tr>
-                        <tr class="border-b border-gray-100">
-                            <th class="px-5 py-2 bg-gray-50"></th>
-                            <th class="px-5 py-2 bg-gray-50"></th>
-                            <th class="text-left text-xs font-medium text-gray-400 px-5 py-2 bg-orange-50 border-l border-orange-100">Surah</th>
-                            <th class="text-left text-xs font-medium text-gray-400 px-5 py-2 bg-orange-50">Ayat</th>
-                            <th class="text-left text-xs font-medium text-gray-400 px-5 py-2 bg-indigo-50 border-l border-indigo-100">Surah</th>
-                            <th class="text-left text-xs font-medium text-gray-400 px-5 py-2 bg-indigo-50">Ayat</th>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Surah</th>
+                            <th>Ayat</th>
+                            <th>Surah</th>
+                            <th>Ayat</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         @foreach($siswas as $index => $siswa)
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-5 py-3 text-sm text-gray-400 font-medium">{{ $index + 1 }}</td>
-                            <td class="px-5 py-3 text-sm font-semibold text-gray-800 whitespace-nowrap">{{ $siswa->nama_siswa }}</td>
-                            <td class="px-5 py-3 text-sm text-gray-700 border-l border-orange-100 bg-orange-50/30">
-                                {{ $hafalan[$siswa->id]->surah_terakhir ?? '-' }}
-                            </td>
-                            <td class="px-5 py-3 text-sm text-gray-700 bg-orange-50/30">
-                                {{ $hafalan[$siswa->id]->ayat_terakhir ?? '-' }}
-                            </td>
-                            <td class="px-5 py-3 text-sm text-gray-700 border-l border-indigo-100 bg-indigo-50/30">
-                                {{ $hafalan[$siswa->id]->surah_lanjut ?? '-' }}
-                            </td>
-                            <td class="px-5 py-3 text-sm text-gray-700 bg-indigo-50/30">
-                                {{ $hafalan[$siswa->id]->ayat_lanjut ?? '-' }}
-                            </td>
-                        </tr>
+                            @php
+                                $data = $hafalan[$siswa->id] ?? null;
+                                $inisial = strtoupper(substr($siswa->nama_siswa, 0, 1));
+                                $kelas = ($siswa->rombel->tingkat_romawi ?? '') . ' ' . ($siswa->rombel->nama_rombel ?? '');
+                                $kelas = trim($kelas) ?: '-';
+                            @endphp
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    <div class="student-cell">
+                                        <div class="avatar">{{ $inisial }}</div>
+                                        <div>
+                                            <div class="student-name">{{ $siswa->nama_siswa }}</div>
+                                            <div class="student-meta">Kelas: {{ $kelas }} | NIS: {{ $siswa->nis ?? '-' }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if($data?->surah_terakhir)
+                                        <span class="badge badge-orange">📖 {{ $data->surah_terakhir }}</span>
+                                    @else
+                                        <span class="empty-value">-</span>
+                                    @endif
+                                </td>
+                                <td>{{ $data?->ayat_terakhir ?? '-' }}</td>
+                                <td>
+                                    @if($data?->surah_lanjut)
+                                        <span class="badge badge-indigo">➡️ {{ $data->surah_lanjut }}</span>
+                                    @else
+                                        <span class="empty-value">-</span>
+                                    @endif
+                                </td>
+                                <td>{{ $data?->ayat_lanjut ?? '-' }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
 
-        @endif
-
-    </div>
+        {{-- Footer catatan --}}
+        <div class="info-count" style="margin-top: 1rem; justify-content: center;">
+            <span class="count-badge" style="background: var(--gray-100); color: var(--gray-600);">
+                💡 Klik "Input Hafalan" untuk mencatat atau memperbarui hafalan siswa
+            </span>
+        </div>
+    @endif
 </div>
+
 @endsection

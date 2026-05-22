@@ -10,6 +10,7 @@ use App\Http\Controllers\Bendahara\PenguranganController;
 use App\Http\Controllers\Bendahara\RekapGajiBulananController;
 use App\Http\Controllers\Bendahara\DashboardController;
 use App\Http\Controllers\Bendahara\TahfidzController;
+use App\Http\Controllers\Bendahara\TabunganSiswaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,8 @@ Route::middleware(['auth', 'role:bendahara'])->prefix('bendahara')->name('bendah
 
     Route::get('/rekap-gaji/cetak-semua', [RekapGajiBulananController::class, 'cetakSemua'])
         ->name('rekap-gaji.cetak-semua');
+    Route::get('/rekap-gaji/cetak-rekap-pdf', [RekapGajiBulananController::class, 'cetakRekapPdf'])
+        ->name('rekap-gaji.cetak-rekap-pdf');
     Route::post('/rekap-gaji/kirim-slip', [RekapGajiBulananController::class, 'kirimSlipGaji'])
         ->name('rekap-gaji.kirim-slip');
 
@@ -38,6 +41,10 @@ Route::middleware(['auth', 'role:bendahara'])->prefix('bendahara')->name('bendah
     Route::resource('penambahan', PenambahanController::class);
     Route::resource('pengurangan', PenguranganController::class);
 
+    Route::get('rekap-gaji/{guruId}/cetak-pdf', [RekapGajiBulananController::class, 'cetakPdf'])
+        ->name('rekap-gaji.cetak-pdf');
+    Route::get('rekap-gaji/{guruId}/download-pdf', [RekapGajiBulananController::class, 'downloadPdf'])
+        ->name('rekap-gaji.download-pdf');
     Route::get('rekap-gaji', [RekapGajiBulananController::class, 'index'])->name('rekap-gaji.index');
     Route::get('/rekap-gaji', [RekapGajiBulananController::class, 'index'])
         ->name('rekap-gaji.index');
@@ -63,4 +70,13 @@ Route::middleware(['auth', 'role:bendahara'])->prefix('bendahara')->name('bendah
 
         Route::post('/tahfidz', [TahfidzController::class, 'store'])
             ->name('tahfidz.store');
+
+    // Tabungan Siswa
+    Route::get('tabungan-siswa/{siswa}/pdf',[TabunganSiswaController::class, 'pdf'])->name('tabungan-siswa.pdf');
+    Route::get('tabungan-siswa', [TabunganSiswaController::class, 'index'])->name('tabungan-siswa.index');
+    Route::get('tabungan-siswa/rombel/{tingkat}', [TabunganSiswaController::class, 'rombel'])->name('tabungan-siswa.rombel');
+    Route::get('tabungan-siswa/siswa/{rombel_id}', [TabunganSiswaController::class, 'siswa'])->name('tabungan-siswa.siswa');
+    Route::get('tabungan-siswa/{siswa_id}', [TabunganSiswaController::class, 'show'])->name('tabungan-siswa.show');
+    Route::post('tabungan-siswa/{siswa_id}', [TabunganSiswaController::class, 'store'])->name('tabungan-siswa.store');
+    Route::delete('tabungan-siswa/{siswa_id}/transaksi/{transaksi_id}', [TabunganSiswaController::class, 'destroy'])->name('tabungan-siswa.destroy');
 });

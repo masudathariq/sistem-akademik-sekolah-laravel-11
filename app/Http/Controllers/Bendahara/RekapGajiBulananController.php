@@ -14,6 +14,7 @@ use App\Models\Bendahara\SlipGajiTerkirim;
 use App\Notifications\SlipGajiNotification;
 use App\Models\Bendahara\TahfidzGuru;
 use App\Models\Bendahara\SettingTahfidz;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 
@@ -25,6 +26,17 @@ class RekapGajiBulananController extends Controller
         $bulan = $request->bulan ?? now()->month;
         $tahun = $request->tahun ?? now()->year;
 
+        $rekap = $this->buildRekapGajiBulanan($bulan, $tahun);
+
+        return view('bendahara.rekap-gaji.index', compact(
+            'rekap',
+            'bulan',
+            'tahun'
+        ));
+    }
+
+    private function buildRekapGajiBulanan($bulan, $tahun): array
+    {
         $gurus = Guru::orderBy('nama')->get();
         $rekap = [];
 
@@ -132,11 +144,43 @@ class RekapGajiBulananController extends Controller
             ];
         }
 
-        return view('bendahara.rekap-gaji.index', compact(
+        return $rekap;
+    }
+
+    public function cetakRekapPdf(Request $request)
+    {
+        $bulan = $request->bulan ?? now()->month;
+        $tahun = $request->tahun ?? now()->year;
+        $rekap = $this->buildRekapGajiBulanan($bulan, $tahun);
+        $namaBulan = \Carbon\Carbon::create(null, $bulan, 1)->translatedFormat('F');
+
+        $summary = [
+            'total_guru' => count($rekap),
+            'total_gaji_pokok' => collect($rekap)->sum('gaji_pokok'),
+            'total_penambahan' => collect($rekap)->sum('penambahan'),
+            'total_pengurangan' => collect($rekap)->sum('pengurangan'),
+            'total_transport' => collect($rekap)->sum('transport'),
+            'total_tahfidz' => collect($rekap)->sum('tahfidz'),
+            'total_dibayar' => collect($rekap)->sum('total'),
+        ];
+
+        $fileName = 'rekap-gaji-' . $bulan . '-' . $tahun . '.pdf';
+
+        $pdf = Pdf::loadView('bendahara.rekap-gaji.cetak-rekap-pdf', compact(
             'rekap',
             'bulan',
-            'tahun'
-        ));
+            'tahun',
+            'namaBulan',
+            'summary'
+        ))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+            ]);
+
+        return $pdf->stream($fileName);
     }
 
     public function show(Request $request, $guruId)
@@ -273,6 +317,143 @@ class RekapGajiBulananController extends Controller
             'tahfidz',
             'totalGaji'
         ));
+    }
+
+    public function cetakPdf(Request $request, $guruId)
+    {
+        return $this->makePdfResponse($request, $guruId, false);
+    }
+
+    public function downloadPdf(Request $request, $guruId)
+    {
+        return $this->makePdfResponse($request, $guruId, true);
+    }
+
+    private function makePdfResponse(Request $request, $guruId, bool $download)
+    {
+        $bulan = $request->bulan ?? now()->month;
+        $tahun = $request->tahun ?? now()->year;
+        $data = $this->buildSlipGajiData($guruId, $bulan, $tahun);
+
+        $fileName = 'slip-gaji-' . str($data['guru']->nama)->slug('-') . '-' . $data['bulan'] . '-' . $data['tahun'] . '.pdf';
+
+        $pdf = Pdf::loadView('bendahara.rekap-gaji.cetak-pdf', $data)
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'DejaVu Sans',
+            ]);
+
+        return $download
+            ? $pdf->download($fileName)
+            : $pdf->stream($fileName);
+    }
+
+    private function buildSlipGajiData($guruId, $bulan, $tahun): array
+    {
+        $guru = Guru::findOrFail($guruId);
+
+        $gaji = Gaji::where('guru_id', $guru->id)->first();
+        $gajiPokok = $gaji->gaji_pokok ?? 0;
+
+        $hadirAsli = DB::table('absensi_guru')
+            ->where('guru_id', $guru->id)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->where('status', 'hadir')
+            ->count();
+
+        $koreksiData = KoreksiHadir::where('guru_id', $guru->id)
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->first();
+
+        $koreksi = $koreksiData->jumlah ?? 0;
+        $keteranganKoreksi = $koreksiData->keterangan ?? '-';
+        $hadirFinal = max(0, $hadirAsli + $koreksi);
+
+        $transportPerHari = DB::table('setting_gaji_transports')
+            ->latest()
+            ->value('transport_per_hari') ?? 0;
+        $transport = $hadirFinal * $transportPerHari;
+
+        $penambahanSemua = Penambahan::where('tipe', 'semua')->get();
+        $penambahanPilihan = Penambahan::where('tipe', 'pilihan')
+            ->get()
+            ->filter(function ($item) use ($guru) {
+                $guruIds = is_array($item->guru_id)
+                    ? $item->guru_id
+                    : json_decode($item->guru_id, true);
+
+                return $guruIds && (
+                    in_array($guru->id, $guruIds) ||
+                    in_array((string) $guru->id, $guruIds)
+                );
+            });
+
+        $penambahanList = $penambahanSemua->merge($penambahanPilihan);
+        $totalPenambahan = $penambahanList->sum('jumlah');
+
+        $penguranganSemua = Pengurangan::where('tipe', 'semua')->get();
+        $penguranganPilihan = Pengurangan::where('tipe', 'pilihan')
+            ->get()
+            ->filter(function ($item) use ($guru) {
+                $guruIds = is_array($item->guru_id)
+                    ? $item->guru_id
+                    : json_decode($item->guru_id, true);
+
+                return $guruIds && (
+                    in_array($guru->id, $guruIds) ||
+                    in_array((string) $guru->id, $guruIds)
+                );
+            });
+
+        $penguranganList = $penguranganSemua->merge($penguranganPilihan);
+        $totalPengurangan = $penguranganList->sum('jumlah');
+
+        $tahfidz = TahfidzGuru::where('guru_id', $guru->id)
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->value('total') ?? 0;
+
+        $tarifTahfidz = DB::table('setting_tahfidz')
+            ->latest()
+            ->value('harga_per_hadir') ?? 0;
+
+        $hadirTahfidz = $tarifTahfidz > 0
+            ? $tahfidz / $tarifTahfidz
+            : 0;
+
+        $totalGaji = $gajiPokok
+            + $totalPenambahan
+            - $totalPengurangan
+            + $transport
+            + $tahfidz;
+
+        $namaBulan = \Carbon\Carbon::create(null, $bulan, 1)->translatedFormat('F');
+
+        return compact(
+            'guru',
+            'bulan',
+            'tahun',
+            'namaBulan',
+            'gajiPokok',
+            'hadirAsli',
+            'koreksi',
+            'keteranganKoreksi',
+            'hadirFinal',
+            'transportPerHari',
+            'transport',
+            'penambahanList',
+            'totalPenambahan',
+            'penguranganList',
+            'totalPengurangan',
+            'hadirTahfidz',
+            'tarifTahfidz',
+            'tahfidz',
+            'totalGaji'
+        );
     }
 
     public function cetakSemua(Request $request)

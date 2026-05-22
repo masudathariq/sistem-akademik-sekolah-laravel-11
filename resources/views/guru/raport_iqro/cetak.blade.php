@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-    /* ===== SCREEN PREVIEW ===== */
     body { background: #e5e7eb; }
 
     .a4-wrapper {
@@ -99,7 +98,6 @@
         print-color-adjust: exact;
     }
 
-    /* ===== TOOLBAR (tidak ikut cetak) ===== */
     .toolbar {
         width: 210mm;
         margin: 0 auto 12px auto;
@@ -127,7 +125,6 @@
     .btn-pdf     { background: #16a34a; color: #fff; }
     .btn-pdf:hover     { background: #15803d; }
 
-    /* ===== PRINT ===== */
     @media print {
         @page {
             size: A4 portrait;
@@ -142,8 +139,10 @@
             width: 100%;
             min-height: auto;
             margin: 0;
-            padding: 0;
+            padding: 18mm 20mm;
             box-shadow: none;
+            background: white;
+            box-sizing: border-box;
         }
 
         .a4-wrapper thead th      { background-color: #c8e6c9 !important; }
@@ -157,25 +156,21 @@
     }
 </style>
 
-{{-- Toolbar --}}
 <div class="toolbar no-print" style="padding-top:16px;">
-    <a href="{{ route('guru.raport-tahfidz.show', $siswa->id) }}" class="btn-back">← Kembali</a>
+    <a href="{{ route('guru.raport-iqro.show', $siswa->id) }}" class="btn-back">← Kembali</a>
     <button onclick="window.print()" class="btn-print">🖨️ Cetak (Browser)</button>
-    <a href="{{ route('guru.raport_tahfidz.download_pdf', $siswa->id) }}" class="btn-pdf">⬇️ Download PDF</a>
+    <a href="{{ route('guru.raport_iqro.download_pdf', $siswa->id) }}" target="_blank" class="btn-pdf">📄 Buka PDF</a>
 </div>
 
-{{-- Area A4 --}}
 <div id="print-area">
 <div class="a4-wrapper">
 
-    {{-- Header --}}
     <div style="text-align:center; margin-bottom:12px;">
-        <div style="font-size:16pt; font-weight:bold; letter-spacing:0.5px;">RAPORT TAHFIDZ AL-QUR'AN</div>
-        <div style="font-size:9.5pt; color:#555; margin-top:2px;">Laporan Perkembangan Hafalan Siswa</div>
-        <hr style="border:none; border-top:2px solid #2d6a4f; margin-top:8px;">
+        <div style="font-size:16pt; font-weight:bold; letter-spacing:0.5px;">RAPORT IQRO</div>
+        <div style="font-size:9.5pt; color:#555; margin-top:2px;">Laporan Perkembangan Bacaan Iqro Siswa</div>
+        <hr style="border:none; border-top:2px solid #166534; margin-top:8px;">
     </div>
 
-    {{-- Info Siswa --}}
     <table class="info-table" style="margin-bottom:10px; border:1px solid #ccc !important; background:#f8fffe;">
         <tr>
             <td style="width:36%; font-weight:bold;">Nama Siswa</td>
@@ -185,7 +180,7 @@
         <tr>
             <td style="font-weight:bold;">Kelas / Rombel</td>
             <td>:</td>
-            <td>{{ $siswa->rombel->tingkat ?? '-' }} / {{ $siswa->rombel->nama_rombel ?? '-' }}</td>
+            <td>{{ $siswa->rombel->tingkat_romawi ?? '-' }} / {{ $siswa->rombel->nama_rombel ?? '-' }}</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">NIS</td>
@@ -194,7 +189,6 @@
         </tr>
     </table>
 
-    {{-- Keterangan Bintang --}}
     <div class="keterangan-bintang">
         <strong>Keterangan Nilai:</strong>
         &nbsp;★ = Belum baik
@@ -203,8 +197,7 @@
         &nbsp;&nbsp;★★★★ = Sangat baik
     </div>
 
-    {{-- A. Penilaian Aspek --}}
-    <div class="section-title">A. Penilaian Aspek Tahfidz</div>
+    <div class="section-title">A. Penilaian Aspek Iqro</div>
     <table style="margin-bottom:12px;">
         <thead>
             <tr>
@@ -237,33 +230,26 @@
         </tbody>
     </table>
 
-    {{-- B. Ringkasan Hafalan --}}
-    <div class="section-title">B. Ringkasan Hafalan</div>
+    <div class="section-title">B. Ringkasan Bacaan</div>
     <table class="info-table" style="margin-bottom:12px; border:1px solid #ccc !important; background:#f8fffe;">
         <tr>
-            <td style="width:36%; font-weight:bold;">Pencapaian Munaqosah</td>
+            <td style="width:35%; font-weight:bold;">Pencapaian Bacaan</td>
             <td style="width:3%;">:</td>
-            <td>
-                {{ $pencapaian ?? 0 }}%
-                <span class="badge {{ ($pencapaian ?? 0) >= 75 ? 'badge-green' : 'badge-yellow' }}" style="margin-left:6px;">
-                    {{ $status ?? 'Belum Dinilai' }}
-                </span>
-            </td>
+            <td>{{ $pencapaian ?? 0 }}% <span class="badge {{ ($pencapaian ?? 0) >= 75 ? 'badge-green' : 'badge-yellow' }}" style="margin-left:6px;">{{ $status ?? 'Belum Dinilai' }}</span></td>
         </tr>
         <tr>
-            <td style="font-weight:bold;">Hafalan Terakhir</td>
+            <td style="font-weight:bold;">Iqro Terakhir</td>
             <td>:</td>
-            <td>Surah <strong>{{ $hafalan->surah_terakhir ?? '-' }}</strong> &nbsp; Ayat <strong>{{ $hafalan->ayat_terakhir ?? '-' }}</strong></td>
+            <td>Iqro <strong>{{ $bacaan->iqro_terakhir ?? '-' }}</strong> &nbsp; Halaman <strong>{{ $bacaan->halaman_terakhir ?? '-' }}</strong></td>
         </tr>
         <tr>
-            <td style="font-weight:bold;">Target Hafalan Lanjutan</td>
+            <td style="font-weight:bold;">Target Bacaan Lanjutan</td>
             <td>:</td>
-            <td>Surah <strong>{{ $hafalan->surah_lanjut ?? '-' }}</strong> &nbsp; Ayat <strong>{{ $hafalan->ayat_lanjut ?? '-' }}</strong></td>
+            <td>Iqro <strong>{{ $bacaan->iqro_lanjut ?? '-' }}</strong> &nbsp; Halaman <strong>{{ $bacaan->halaman_lanjut ?? '-' }}</strong></td>
         </tr>
     </table>
 
-    {{-- C. Nilai Ujian --}}
-    <div class="section-title">C. Nilai Ujian Tahfidz</div>
+    <div class="section-title">C. Nilai Ujian Iqro</div>
     <table style="margin-bottom:12px;">
         <thead>
             <tr>
@@ -274,65 +260,55 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($ujian as $index => $u)
-            @php $ket = $u->keterangan ?? '-'; @endphp
-            <tr class="{{ $index % 2 == 0 ? 'row-even' : 'row-odd' }}">
-                <td style="text-align:center;">{{ $index + 1 }}</td>
-                <td>{{ $u->nama_ujian }}</td>
-                <td style="text-align:center; font-weight:bold; font-size:11pt;">{{ $u->nilai_ujian }}</td>
-                <td style="text-align:center;">
-                    <span class="badge {{ $ket === 'Sangat Baik' ? 'badge-green' : ($ket === 'Baik' ? 'badge-blue' : ($ket === 'Cukup' ? 'badge-yellow' : 'badge-gray')) }}">
-                        {{ $ket }}
-                    </span>
-                </td>
-            </tr>
+            @forelse($ujian as $index=>$u)
+                @php $ket = $u->keterangan ?? '-'; @endphp
+                <tr class="{{ $index % 2 == 0 ? 'even' : 'odd' }}">
+                    <td style="text-align:center;">{{ $index + 1 }}</td>
+                    <td>{{ $u->nama_ujian }}</td>
+                    <td style="text-align:center; font-weight:bold; font-size:10pt;">{{ $u->nilai_ujian }}</td>
+                    <td style="text-align:center;">
+                        <span class="badge {{ $ket === 'Sangat Baik' ? 'badge-green' : ($ket === 'Baik' ? 'badge-blue' : ($ket === 'Cukup' ? 'badge-yellow' : 'badge-gray')) }}">{{ $ket }}</span>
+                    </td>
+                </tr>
             @empty
-            <tr>
-                <td colspan="4" style="text-align:center; color:#aaa; font-style:italic; padding:10px;">Belum ada nilai ujian.</td>
-            </tr>
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#aaa; font-style:italic; padding:6px;">Belum ada nilai ujian.</td>
+                </tr>
             @endforelse
         </tbody>
     </table>
 
-    {{-- D. Catatan Guru --}}
     <div class="section-title">D. Catatan Guru</div>
     <div class="catatan-box">
-        @if($catatan)
-            @php
-                $sentences  = explode('. ', $catatan);
-                $paragraphs = array_chunk($sentences, 3);
-            @endphp
-            @foreach($paragraphs as $para)
-                <p>{{ implode('. ', $para) }}{{ !str_ends_with(trim(end($para)), '.') ? '.' : '' }}</p>
-            @endforeach
-        @else
-            <p style="color:#aaa; font-style:italic;">Tidak ada keterangan tambahan.</p>
-        @endif
+        @if ($catatan)
+        <p>{{ $catatan }}</p>@else<p style="color:#aaa; font-style:italic;">Tidak ada keterangan tambahan.</p>@endif
     </div>
 
-    {{-- Tanda Tangan --}}
     <div class="ttd-wrapper">
-        <div class="ttd-box">
-            <div>Mengetahui,</div>
-            <div>Orang Tua / Wali</div>
-            <div class="ttd-space"></div>
-            <div class="ttd-line">
-                <div>( ________________________ )</div>
-            </div>
-        </div>
-        <div class="ttd-box">
-            <div>Guru Tahfidz,</div>
-            <div class="ttd-space"></div>
-            <div class="ttd-line">
-                <strong>{{ $namaGuru }}</strong><br>
-                <span style="font-size:9pt;">NUPTK: {{ $nuptk }}</span>
-            </div>
-        </div>
+        <table style="width:100%; border-collapse:collapse; text-align:center;">
+            <tr>
+                <td style="width:33%; vertical-align:top; font-size:9pt;">
+                    Mengetahui,<br>
+                    Orang Tua / Wali
+                    <div style="height:90px;"></div>
+                    <div class="ttd-name">( ________________________ )</div>
+                </td>
+                <td style="width:33%; vertical-align:top; font-size:9pt;">
+                    Guru Iqro
+                    <div style="height:90px;"></div>
+                    <br>
+                    <div class="ttd-name">{{ $namaGuru }}<br><span class="ttd-sub">NUPTK: {{ $nuptk }}</span></div>
+                </td>
+                <td style="width:33%; vertical-align:top; font-size:9pt;">
+                    Mengetahui,<br>
+                    Kepala Madrasah
+                    <div style="height:90px;"></div>
+                    <div class="ttd-name">Imroatun Rofiqoh, S.Pd.<br><span class="ttd-sub">NUPTK: 1234567890123456</span></div>
+                </td>
+            </tr>
+        </table>
     </div>
 
-</div>{{-- end .a4-wrapper --}}
-</div>{{-- end #print-area --}}
-
-<div style="height:32px;"></div>
-
+</div>
+</div>
 @endsection

@@ -18,7 +18,7 @@ public function index()
     $tahunAktif = TahunAjaran::where('is_active', 1)->first();
 
     $rombels = Rombel::with('kategori')
-        ->where('tahun_ajaran_id', $tahunAktif->id)
+        ->where('tahun_ajaran_id', $tahunAktif?->id)
         ->orderBy('tingkat')
         ->orderBy('kode_rombel')
         ->get();

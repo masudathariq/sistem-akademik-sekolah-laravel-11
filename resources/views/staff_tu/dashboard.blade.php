@@ -16,7 +16,7 @@
             <div>
                 <p class="text-blue-200 text-[10px] font-bold uppercase tracking-widest mb-1">Staff Tata Usaha</p>
                 <h2 class="text-2xl md:text-3xl font-extrabold mb-1.5 tracking-tight">
-                    Halo, {{ auth()->user()->name ?? 'Staff TU' }} 👋
+                    Halo, {{ auth()->user()->name ?? 'Staff TU' }}
                 </h2>
                 <p class="text-blue-100 text-sm leading-relaxed max-w-lg">
                     Selamat datang di sistem administrasi. Pantau data siswa, kelola jadwal, dan kelola arsip sekolah dari satu tempat.
@@ -80,45 +80,6 @@
         @endforeach
     </div>
 
-    
-    {{-- AKSES CEPAT --}}
-    <div class="bg-white/90 backdrop-blur border border-white rounded-2xl shadow-md overflow-hidden">
-        <div class="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-            <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <p class="text-sm font-bold text-slate-700">Akses Cepat</p>
-        </div>
-        <div class="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
-            @php
-                $shortcuts = [
-                    ['label'=>'Data Siswa',      'color'=>'blue',    'href'=>'#', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>'],
-                    ['label'=>'Data Guru',       'color'=>'violet',  'href'=>'#', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>'],
-                    ['label'=>'Jadwal Mengajar', 'color'=>'emerald', 'href'=>'#', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>'],
-                    ['label'=>'Mata Pelajaran',  'color'=>'amber',   'href'=>'#', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>'],
-                    ['label'=>'Data Rombel',     'color'=>'rose',    'href'=>'#', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>'],
-                    ['label'=>'Arsip & Laporan', 'color'=>'teal',    'href'=>'#', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>'],
-                ];
-                $scMap = [
-                    'blue'    => ['card'=>'bg-blue-50 border-blue-200 hover:bg-blue-100',       'icon'=>'bg-blue-100 text-blue-600',       'txt'=>'text-blue-700'],
-                    'violet'  => ['card'=>'bg-violet-50 border-violet-200 hover:bg-violet-100', 'icon'=>'bg-violet-100 text-violet-600',   'txt'=>'text-violet-700'],
-                    'emerald' => ['card'=>'bg-emerald-50 border-emerald-200 hover:bg-emerald-100','icon'=>'bg-emerald-100 text-emerald-600','txt'=>'text-emerald-700'],
-                    'amber'   => ['card'=>'bg-amber-50 border-amber-200 hover:bg-amber-100',    'icon'=>'bg-amber-100 text-amber-600',     'txt'=>'text-amber-700'],
-                    'rose'    => ['card'=>'bg-rose-50 border-rose-200 hover:bg-rose-100',       'icon'=>'bg-rose-100 text-rose-600',       'txt'=>'text-rose-700'],
-                    'teal'    => ['card'=>'bg-teal-50 border-teal-200 hover:bg-teal-100',       'icon'=>'bg-teal-100 text-teal-600',       'txt'=>'text-teal-700'],
-                ];
-            @endphp
-            @foreach($shortcuts as $sc)
-            @php $s = $scMap[$sc['color']]; @endphp
-            <a href="{{ $sc['href'] }}" class="flex flex-col items-center gap-2 border rounded-xl px-2 py-3.5 text-center text-xs font-bold transition-colors {{ $s['card'] }} {{ $s['txt'] }}">
-                <div class="w-9 h-9 rounded-xl {{ $s['icon'] }} flex items-center justify-center">
-                    <svg class="w-4.5 h-4.5 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $sc['icon'] !!}</svg>
-                </div>
-                {{ $sc['label'] }}
-            </a>
-            @endforeach
-        </div>
-    </div>
 
     {{-- DIAGRAM (desktop only) --}}
     <div class="hidden md:block bg-white/90 backdrop-blur border border-white rounded-2xl shadow-md overflow-hidden">

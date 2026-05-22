@@ -240,8 +240,8 @@
                     {{-- Kelas --}}
                     <td>
                         <div class="rt-kelas">
-                            <span class="rt-kelas-badge">{{ $tingkat }}</span>
-                            <span class="rt-kelas-label">Kelas {{ $tingkat }}</span>
+                            <span class="rt-kelas-badge">{{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</span>
+                            <span class="rt-kelas-label">Kelas {{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</span>
                         </div>
                     </td>
 
@@ -256,14 +256,14 @@
                     {{-- Laki-laki --}}
                     <td>
                         <span class="rt-gender-pill pill-l">
-                            ♂ {{ $data['L'] }}
+                            L {{ $data['L'] }}
                         </span>
                     </td>
 
                     {{-- Perempuan --}}
                     <td>
                         <span class="rt-gender-pill pill-p">
-                            ♀ {{ $data['P'] }}
+                            P {{ $data['P'] }}
                         </span>
                     </td>
 
@@ -282,7 +282,7 @@
                 @empty
                 <tr class="empty-row">
                     <td colspan="5">
-                        <div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div>
+                        <div style="font-size:1.5rem;margin-bottom:.5rem;font-weight:800;color:#1d4ed8;">Data</div>
                         Data belum tersedia
                     </td>
                 </tr>
@@ -301,8 +301,8 @@
         @endphp
         <div class="rt-card">
             <div class="rt-card-header">
-                <div class="rt-card-badge">{{ $tingkat }}</div>
-                <div class="rt-card-tingkat">Kelas {{ $tingkat }}</div>
+                <div class="rt-card-badge">{{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</div>
+                <div class="rt-card-tingkat">Kelas {{ \App\Models\Tatausaha\Rombel::formatTingkat($tingkat) }}</div>
             </div>
             <div class="rt-card-nums">
                 <div class="rt-card-num">
@@ -325,7 +325,7 @@
         </div>
         @empty
         <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.875rem;grid-column:span 2;">
-            <div style="font-size:1.5rem;margin-bottom:.5rem;">📋</div>
+            <div style="font-size:1.5rem;margin-bottom:.5rem;font-weight:800;color:#1d4ed8;">Data</div>
             Data belum tersedia
         </div>
         @endforelse

@@ -71,7 +71,7 @@
         <tbody>
             @forelse($rekapRombel as $row)
             <tr>
-                <td class="tc" style="font-weight:600;">Kelas {{ $row['tingkat'] }}</td>
+                <td class="tc" style="font-weight:600;">Kelas {{ $row['tingkat_label'] ?? \App\Models\Tatausaha\Rombel::formatTingkat($row['tingkat']) }}</td>
                 <td>{{ $row['rombel'] }}</td>
                 <td class="tc">
                     <span class="kategori-badge {{ $row['kategori'] === 'pondok' ? 'badge-pondok' : 'badge-umum' }}">
@@ -96,7 +96,7 @@
         <div class="rekap-card-top">
             <div>
                 <div class="rekap-card-rombel">{{ $row['rombel'] }}</div>
-                <div class="rekap-card-tingkat">Kelas {{ $row['tingkat'] }}</div>
+                <div class="rekap-card-tingkat">Kelas {{ $row['tingkat_label'] ?? \App\Models\Tatausaha\Rombel::formatTingkat($row['tingkat']) }}</div>
             </div>
             <span class="kategori-badge {{ $row['kategori'] === 'pondok' ? 'badge-pondok' : 'badge-umum' }}">
                 {{ ucfirst($row['kategori']) }}

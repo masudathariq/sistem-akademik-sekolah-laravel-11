@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Tatausaha\TahunAjaran;
 use App\Models\Tatausaha\RombelKategori;
-use App\Models\Tatausaha\Siswa; // ✅ INI YANG KURANG
+use App\Models\Tatausaha\Siswa;
 use App\Models\Guru;
 
 
@@ -47,6 +47,21 @@ class Rombel extends Model
 
     public function getNamaLengkapAttribute()
     {
-        return "Kelas {$this->tingkat} - {$this->kode_rombel} ({$this->nama_rombel})";
+        return "Kelas {$this->tingkat_romawi} - {$this->kode_rombel} ({$this->nama_rombel})";
+    }
+
+    public function getTingkatRomawiAttribute()
+    {
+        return self::formatTingkat($this->tingkat);
+    }
+
+    public static function formatTingkat($tingkat)
+    {
+        return match ((string) $tingkat) {
+            '7', 'VII' => 'VII',
+            '8', 'VIII' => 'VIII',
+            '9', 'IX' => 'IX',
+            default => $tingkat ?? '-',
+        };
     }
 }
